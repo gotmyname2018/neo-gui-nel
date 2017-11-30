@@ -1,4 +1,6 @@
 ﻿using Neo.Core;
+using Neo.Implementations.Wallets.EntityFramework;
+using Neo.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace Neo.GUIPlugin
             {
                 try
                 {
-                    var dll = System.Reflection.Assembly.LoadFile( System.IO.Path.GetFullPath(file));
+                    var dll = System.Reflection.Assembly.LoadFile(System.IO.Path.GetFullPath(file));
                     foreach (var t in dll.ExportedTypes)
                     {
                         var b = t.GetInterfaces().Contains(typeof(IPlugin));
@@ -91,6 +93,14 @@ namespace Neo.GUIPlugin
     public interface IAPI
     {
         void SignAndShowInformation(Transaction tx);
+        LocalNode LocalNode
+        {
+            get;
+        }
+        UserWallet CurrentWallet
+        {
+            get;
+        }
     }
     public interface IPlugin
     {

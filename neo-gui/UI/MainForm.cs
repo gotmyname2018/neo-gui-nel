@@ -22,6 +22,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using Neo.Network;
 
 namespace Neo.UI
 {
@@ -256,6 +257,10 @@ namespace Neo.UI
         }
         class Api : Neo.GUIPlugin.IAPI
         {
+            public LocalNode LocalNode => Program.LocalNode;
+
+            public UserWallet CurrentWallet => Program.CurrentWallet;
+
             public void SignAndShowInformation(Transaction tx)
             {
                  Helper.SignAndShowInformation(tx);
