@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AntShares.MonoCecil" Version="1.0.0" />
+    <ProjectReference Include="..\..\neo-vm\src\neo-vm\neo-vm.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="il2avm\" />
+  </ItemGroup>
+
+</Project>

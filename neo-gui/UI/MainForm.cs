@@ -254,9 +254,26 @@ namespace Neo.UI
             }
             blockchain.VerifyBlocks = true;
         }
+        class Api : Neo.GUIPlugin.IAPI
+        {
+            public void SignAndShowInformation(Transaction tx)
+            {
+                 Helper.SignAndShowInformation(tx);
+            }
+        }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            //插件机制
+            Neo.GUIPlugin.PluginTool plugintool = new GUIPlugin.PluginTool();
+            var api = new Api();
+            plugintool.LoadDlls(api);
+            var pluginMenu = new ToolStripMenuItem();
+            pluginMenu.Text = "Plugin";
+            this.menuStrip1.Items.Add(pluginMenu);
+            plugintool.InitMenu(pluginMenu);
+
+
             Task.Run(() =>
             {
                 const string acc_path = "chain.acc";
