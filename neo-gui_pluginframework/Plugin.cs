@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Neo.GUIPlugin
 {
@@ -79,7 +80,14 @@ namespace Neo.GUIPlugin
                         var __menu = n;
                         citem.Click += (s, e) =>
                           {
-                              __plugin.OnMenu(__menu);
+                              try
+                              {
+                                  __plugin.OnMenu(__menu);
+                              }
+                              catch(Exception err)
+                              {
+                                  MessageBox.Show("error:" + err.Message);
+                              }
                           };
                     }
                 }
