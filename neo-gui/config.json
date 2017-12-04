@@ -1,6 +1,6 @@
 ﻿{
   "ApplicationConfiguration": {
-    "DataDirectoryPath": "ChainTestNet",
+    "DataDirectoryPath": "D:\\Neo\\ChainTestNet",
     "CertCachePath": "Certs",
     "NodePort": 20333,
     "WsPort": 20334,
