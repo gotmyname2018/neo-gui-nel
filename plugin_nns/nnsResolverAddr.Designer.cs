@@ -28,12 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.butQuery = new System.Windows.Forms.Button();
             this.txtName = new System.Windows.Forms.TextBox();
             this.txtAddr = new System.Windows.Forms.TextBox();
             this.txtTXID = new System.Windows.Forms.TextBox();
             this.butAlter = new System.Windows.Forms.Button();
             this.butDelete = new System.Windows.Forms.Button();
+            this.dgvNotify = new System.Windows.Forms.DataGridView();
+            this.timerFresh = new System.Windows.Forms.Timer(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvNotify)).BeginInit();
             this.SuspendLayout();
             // 
             // butQuery
@@ -62,7 +66,7 @@
             // 
             // txtTXID
             // 
-            this.txtTXID.Location = new System.Drawing.Point(38, 329);
+            this.txtTXID.Location = new System.Drawing.Point(38, 524);
             this.txtTXID.Name = "txtTXID";
             this.txtTXID.Size = new System.Drawing.Size(525, 21);
             this.txtTXID.TabIndex = 3;
@@ -87,11 +91,30 @@
             this.butDelete.UseVisualStyleBackColor = true;
             this.butDelete.Click += new System.EventHandler(this.butDelete_Click);
             // 
+            // dgvNotify
+            // 
+            this.dgvNotify.AllowUserToAddRows = false;
+            this.dgvNotify.AllowUserToDeleteRows = false;
+            this.dgvNotify.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvNotify.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvNotify.Location = new System.Drawing.Point(38, 117);
+            this.dgvNotify.Name = "dgvNotify";
+            this.dgvNotify.RowTemplate.Height = 23;
+            this.dgvNotify.Size = new System.Drawing.Size(965, 401);
+            this.dgvNotify.TabIndex = 6;
+            // 
+            // timerFresh
+            // 
+            this.timerFresh.Enabled = true;
+            this.timerFresh.Interval = 5000;
+            this.timerFresh.Tick += new System.EventHandler(this.timerFresh_Tick);
+            // 
             // nnsResolverAddr
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(594, 367);
+            this.ClientSize = new System.Drawing.Size(1031, 557);
+            this.Controls.Add(this.dgvNotify);
             this.Controls.Add(this.butDelete);
             this.Controls.Add(this.butAlter);
             this.Controls.Add(this.txtTXID);
@@ -101,6 +124,7 @@
             this.Name = "nnsResolverAddr";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "nns域名解析器";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvNotify)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -114,5 +138,7 @@
         private System.Windows.Forms.TextBox txtTXID;
         private System.Windows.Forms.Button butAlter;
         private System.Windows.Forms.Button butDelete;
+        private System.Windows.Forms.DataGridView dgvNotify;
+        private System.Windows.Forms.Timer timerFresh;
     }
 }

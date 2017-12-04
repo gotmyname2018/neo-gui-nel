@@ -4,39 +4,66 @@ using Neo.SmartContract;
 using Neo.VM;
 using System;
 using System.Windows.Forms;
-using Neo.GUIPlugin;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace plugin_nns
 {
     public partial class nnsResolverAddr : Form
     {
-        private InvocationTransaction tx;
-        private UInt160 script_hash;
+        //private InvocationTransaction tx;
+        //private UInt160 script_hash;
+
+        private DataTable dt = new DataTable();
         //private ContractParameter[] parameters;
 
         //定义nns注册器合约hash
-        private static readonly string NnsResolverAddrScripthash = "171ca20b36c73cb20b10d2804286eb82f6b93069";
+        private static readonly string NnsResolverAddrScripthash = "f50b58d64e67f3cf4eb01041f919961947bafd56";
 
         private static readonly Fixed8 net_fee = Fixed8.FromDecimal(0.001m);
 
         public nnsResolverAddr()
         {
             InitializeComponent();
+            dt.Columns.Add("scripthash", typeof(string));
+            dt.Columns.Add("key", typeof(string));
+            dt.Columns.Add("value", typeof(string));
+            dt.Columns.Add("time", typeof(DateTime));
 
             Blockchain.Notify += NCNotify;
         }
 
         private void NCNotify(object sender, BlockNotifyEventArgs e)
         {
-            var e2 = e.Notifications;
-            foreach (NotifyEventArgs notify in e2)
-            {
-                StackItem s = notify.State;
-                MessageBox.Show("0x" + s.GetArray()[1].GetByteArray().ToHexString(), s.GetArray()[0].GetString());
-            }
+            var a = e.Notifications[0].ScriptHash;
+            var b = UInt160.Parse(NnsResolverAddrScripthash);
+            var c = UInt160.Parse("c191b3e4030b9105e59c6bb56ec0d1273cd43284");
+            //DataRow r = dt.NewRow();
+            //r[0] = a;
+            //r[1] = b;
+            //dt.Rows.Add(r);
 
+            if ((a==b) || (a==c))
+            {
+                var e2 = e.Notifications;
+                foreach (NotifyEventArgs notify in e2)
+                {
+                    string scripthash = notify.ScriptHash.ToString();
+                    StackItem s = notify.State;
+                    string key = s.GetArray()[0].GetString();
+                    string value = s.GetArray()[1].GetByteArray().ToHexString();
+
+                    var r = dt.NewRow();
+                    r[0] = scripthash;
+                    r[1] = key;
+                    r[2] = value;
+                    r[3] = DateTime.Now;
+                    dt.Rows.Add(r);
+
+                    //MessageBox.Show("0x" + value, key);
+                }
+            }
             //plugin_nns.api.SignAndShowInformation(tx);
             //plugin_nns.api.CurrentWallet;
         }
@@ -107,6 +134,9 @@ namespace plugin_nns
 
         private void ExeContract(ContractParameter[] contractParameters)
         {
+            InvocationTransaction tx = new InvocationTransaction();
+            UInt160 script_hash;
+
             string txScript = string.Empty;
 
             //格式化成hash160格式串
@@ -127,7 +157,7 @@ namespace plugin_nns
             //**************
             //构建交易并试运行获取预计gas
             //**************
-            if (tx == null) tx = new InvocationTransaction();
+            //if (tx == null) tx = new InvocationTransaction();
             tx.Version = 1;
             //将之前生成的脚本导入交易类
             tx.Script = txScript.HexToBytes();
@@ -245,20 +275,20 @@ namespace plugin_nns
 
         private void butQuery_Click(object sender, EventArgs e)
         {
-            StorageKey sk = new StorageKey
-            {
-                ScriptHash = UInt160.Parse(NnsResolverAddrScripthash),
-                Key = NameHash(txtName.Text)
-            };
-            var storageItem = Blockchain.Default.GetStorageItem(sk);
-            string value = "null";
-            if (storageItem != null)
-            { value = Encoding.UTF8.GetString(storageItem.Value); }
+            //StorageKey sk = new StorageKey
+            //{
+            //    ScriptHash = UInt160.Parse(NnsResolverAddrScripthash),
+            //    Key = NameHash(txtName.Text)
+            //};
+            //var storageItem = Blockchain.Default.GetStorageItem(sk);
+            //string value = "null";
+            //if (storageItem != null)
+            //{ value = Encoding.UTF8.GetString(storageItem.Value); }
 
-            txtAddr.Text = value;
+            //txtAddr.Text = value;
 
-            //string[] nnsS = splitNNS(txtName.Text);
-            //ExeContract(getQueryParas(nnsS[0], nnsS[1], nnsS[2]));
+            string[] nnsS = splitNNS(txtName.Text);
+            ExeContract(getQueryParas(nnsS[0], nnsS[1], nnsS[2]));
         }
 
         private void butAlter_Click(object sender, EventArgs e)
@@ -271,6 +301,13 @@ namespace plugin_nns
         {
             string[] nnsS = splitNNS(txtName.Text);
             ExeContract(getDeleteParas(nnsS[0], nnsS[1], nnsS[2]));
+        }
+
+        private void timerFresh_Tick(object sender, EventArgs e)
+        {
+            dgvNotify.DataSource = dt;
+            dgvNotify.Sort(dgvNotify.Columns[3],System.ComponentModel.ListSortDirection.Ascending);
+            dgvNotify.Refresh();
         }
 
         //private void button1_Click(object sender, EventArgs e)
