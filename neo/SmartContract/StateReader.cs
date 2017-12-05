@@ -146,8 +146,12 @@ namespace Neo.SmartContract
             else if (hashOrPubkey.Length == 33)
                 result = CheckWitness(engine, ECPoint.DecodePoint(hashOrPubkey, ECCurve.Secp256r1));
             else
+            {
+                FullLog?.SysCallInfo("Runtime_CheckWitness", false);
                 return false;
+            }
             engine.EvaluationStack.Push(result);
+            FullLog?.SysCallInfo("Runtime_CheckWitness", true, result.ToString());
             return true;
         }
 
@@ -586,6 +590,18 @@ namespace Neo.SmartContract
             });
             engine.EvaluationStack.Push(item?.Value ?? new byte[0]);
             return true;
+        }
+
+        public Neo.SmartContract.Debug.FullLog FullLog = null;
+        public void BeginDebug(Neo.SmartContract.Debug.FullLog fullLog)
+        {
+            this.FullLog = fullLog;
+        }
+
+        public override bool Invoke(string method, ExecutionEngine engine)
+        {
+            this.FullLog?.SysCall(method);
+            return base.Invoke(method, engine);
         }
     }
 }

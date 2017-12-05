@@ -97,11 +97,14 @@ namespace Neo.UI
             if (tx.Inputs == null) tx.Inputs = new CoinReference[0];
             if (tx.Outputs == null) tx.Outputs = new TransactionOutput[0];
             if (tx.Scripts == null) tx.Scripts = new Witness[0];
-            ApplicationEngine engine = ApplicationEngine.Run(tx.Script, tx);
+            ApplicationEngine engine = ApplicationEngine.RunWithDebug(tx.Script, tx);
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"VM State: {engine.State}");
             sb.AppendLine($"Gas Consumed: {engine.GasConsumed}");
             sb.AppendLine($"Evaluation Stack: {new JArray(engine.EvaluationStack.Select(p => p.ToParameter().ToJson()))}");
+            if (System.IO.Directory.Exists("log") == false)
+                System.IO.Directory.CreateDirectory("log");
+            engine.FullLog.Save("log/temp_log.json");
             textBox7.Text = sb.ToString();
             if (!engine.State.HasFlag(VMState.FAULT))
             {

@@ -1,10 +1,12 @@
 ﻿using Neo.Core;
 using Neo.Cryptography.ECC;
+using Neo.SmartContract;
 using Neo.IO.Caching;
 using Neo.VM;
 using System;
 using System.Numerics;
 using System.Text;
+using Neo.SmartContract.Debug;
 
 namespace Neo.SmartContract
 {
@@ -232,28 +234,63 @@ namespace Neo.SmartContract
         {
             try
             {
+
                 while (!State.HasFlag(VMState.HALT) && !State.HasFlag(VMState.FAULT))
                 {
+                    OpCode nextOpcode = OpCode.NOP;
                     if (CurrentContext.InstructionPointer < CurrentContext.Script.Length)
                     {
-                        OpCode nextOpcode = CurrentContext.NextInstruction;
-
+                        nextOpcode = CurrentContext.NextInstruction;
+                        if (this.FullLog != null)
+                        {
+                            this.FullLog.NextOp(CurrentContext.InstructionPointer, nextOpcode);
+                        }
                         gas_consumed = checked(gas_consumed + GetPrice(nextOpcode) * ratio);
-                        if (!testMode && gas_consumed > gas_amount) return false;
-
-                        if (!CheckItemSize(nextOpcode)) return false;
-                        if (!CheckStackSize(nextOpcode)) return false;
-                        if (!CheckArraySize(nextOpcode)) return false;
-                        if (!CheckInvocationStack(nextOpcode)) return false;
-                        if (!CheckBigIntegers(nextOpcode)) return false;
+                        if (!testMode && gas_consumed > gas_amount)
+                        {
+                            if (FullLog != null) FullLog.Error("gas_consumed > gas_amount");
+                            return false;
+                        }
+                        if (!CheckItemSize(nextOpcode))
+                        {
+                            if (FullLog != null) FullLog.Error("CheckItemSize");
+                            return false;
+                        }
+                        if (!CheckStackSize(nextOpcode))
+                        {
+                            if (FullLog != null) FullLog.Error("CheckStackSize");
+                            return false;
+                        }
+                        if (!CheckArraySize(nextOpcode))
+                        {
+                            if (FullLog != null) FullLog.Error("CheckArraySize");
+                            return false;
+                        }
+                        if (!CheckInvocationStack(nextOpcode))
+                        {
+                            if (FullLog != null) FullLog.Error("CheckInvocationStack");
+                            return false;
+                        }
+                        if (!CheckBigIntegers(nextOpcode))
+                        {
+                            if (FullLog != null) FullLog.Error("CheckBigIntegers");
+                            return false;
+                        }
                     }
-
                     StepInto();
+                    if (FullLog != null)
+                    {
+                        LogResult(nextOpcode);
+                    }
                 }
             }
             catch
             {
                 return false;
+            }
+            if (FullLog != null)
+            {
+                FullLog.Finish(State);
             }
             return !State.HasFlag(VMState.FAULT);
         }
@@ -357,6 +394,21 @@ namespace Neo.SmartContract
             }
         }
 
+        public static ApplicationEngine RunWithDebug(byte[] script, IScriptContainer container = null)
+        {
+            DataCache<UInt160, AccountState> accounts = Blockchain.Default.CreateCache<UInt160, AccountState>();
+            DataCache<ECPoint, ValidatorState> validators = Blockchain.Default.CreateCache<ECPoint, ValidatorState>();
+            DataCache<UInt256, AssetState> assets = Blockchain.Default.CreateCache<UInt256, AssetState>();
+            DataCache<UInt160, ContractState> contracts = Blockchain.Default.CreateCache<UInt160, ContractState>();
+            DataCache<StorageKey, StorageItem> storages = Blockchain.Default.CreateCache<StorageKey, StorageItem>();
+            CachedScriptTable script_table = new CachedScriptTable(contracts);
+            StateMachine service = new StateMachine(accounts, validators, assets, contracts, storages);
+            ApplicationEngine engine = new ApplicationEngine(TriggerType.Application, container, script_table, service, Fixed8.Zero, true);
+            engine.BeginDebug();
+            engine.LoadScript(script, false);
+            engine.Execute();
+            return engine;
+        }
         public static ApplicationEngine Run(byte[] script, IScriptContainer container = null)
         {
             DataCache<UInt160, AccountState> accounts = Blockchain.Default.CreateCache<UInt160, AccountState>();
@@ -371,5 +423,43 @@ namespace Neo.SmartContract
             engine.Execute();
             return engine;
         }
+
+        public Neo.SmartContract.Debug.FullLog FullLog
+        {
+            get;
+            private set;
+        }
+        public void BeginDebug()
+        {//打开Log
+            this.FullLog = new FullLog();
+
+            var sm = this.service as StateMachine;
+            if (sm != null)
+            {
+                sm.BeginDebug(this.FullLog);
+            }
+        }
+
+        public override void LoadScript(byte[] script, bool push_only = false)
+        {
+            if (this.FullLog != null)
+            {
+                var hash = script.ToScriptHash().ToString();
+                this.FullLog.LoadScript(hash);
+            }
+            base.LoadScript(script, push_only);
+        }
+        void LogResult(VM.OpCode nextOpcode)
+        {
+            if (
+                nextOpcode == OpCode.CHECKMULTISIG ||
+                nextOpcode == OpCode.CHECKSIG
+                )
+            {
+                var item = this.EvaluationStack.Peek();
+                this.FullLog.OpResult(item);
+            }
+        }
+
     }
 }
