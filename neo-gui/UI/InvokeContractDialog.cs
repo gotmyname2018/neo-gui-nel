@@ -102,8 +102,6 @@ namespace Neo.UI
             sb.AppendLine($"VM State: {engine.State}");
             sb.AppendLine($"Gas Consumed: {engine.GasConsumed}");
             sb.AppendLine($"Evaluation Stack: {new JArray(engine.EvaluationStack.Select(p => p.ToParameter().ToJson()))}");
-            if (System.IO.Directory.Exists("log") == false)
-                System.IO.Directory.CreateDirectory("log");
             engine.FullLog.Save("log/temp_log.json");
             textBox7.Text = sb.ToString();
             if (!engine.State.HasFlag(VMState.FAULT))

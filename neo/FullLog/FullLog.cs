@@ -160,6 +160,12 @@ namespace Neo.SmartContract.Debug
         }
         public void Save(string filename)
         {
+            var path = System.IO.Path.GetDirectoryName(filename);
+            if (System.IO.Directory.Exists(path) == false)
+                System.IO.Directory.CreateDirectory(path);
+
+            System.IO.File.Delete(filename);
+
             var json = new MyJson.JsonNode_Object();
             json.SetDictValue("script", script.ToJson());
             if (string.IsNullOrEmpty(error) == false)
