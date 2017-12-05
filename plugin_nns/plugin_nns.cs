@@ -18,7 +18,7 @@ namespace plugin_nns
 
         public string[] GetMenus()
         {
-            return new string[] { "注册器", "解析器" };
+            return new string[] { "注册器", "解析器", "域名转账" };
         }
 
         public void OnMenu(string menu)
@@ -32,6 +32,11 @@ namespace plugin_nns
                 //MessageBox.Show("请求解析器");
                 nnsResolverAddr nnsResolverAddr = new nnsResolverAddr();
                 nnsResolverAddr.ShowDialog();
+            }
+            else if (menu == "域名转账")
+            {
+                nnsTransfer nnsTransfer = new nnsTransfer();
+                nnsTransfer.ShowDialog();
             }
         }
 

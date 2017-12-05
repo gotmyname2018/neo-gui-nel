@@ -40,6 +40,9 @@
     <Reference Include="Neo.VM">
       <HintPath>..\neo-vm\bin\Debug\net47\Neo.VM.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -58,6 +61,12 @@
     <Compile Include="nnsResolverAddr.Designer.cs">
       <DependentUpon>nnsResolverAddr.cs</DependentUpon>
     </Compile>
+    <Compile Include="nnsTransfer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="nnsTransfer.Designer.cs">
+      <DependentUpon>nnsTransfer.cs</DependentUpon>
+    </Compile>
     <Compile Include="plugin_nns.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -65,6 +74,12 @@
     <EmbeddedResource Include="nnsResolverAddr.resx">
       <DependentUpon>nnsResolverAddr.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="nnsTransfer.resx">
+      <DependentUpon>nnsTransfer.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
