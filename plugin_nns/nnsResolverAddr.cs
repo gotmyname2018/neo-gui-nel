@@ -19,7 +19,7 @@ namespace plugin_nns
         //private ContractParameter[] parameters;
 
         //定义nns注册器合约hash
-        private static readonly string NnsResolverAddrScripthash = "f50b58d64e67f3cf4eb01041f919961947bafd56";
+        private static readonly string NnsResolverAddrScripthash = "706c89208c5b6016a054a58cc83aeda0d70f0f95";
 
         private static readonly Fixed8 net_fee = Fixed8.FromDecimal(0.001m);
 
