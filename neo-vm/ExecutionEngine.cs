@@ -9,7 +9,7 @@ namespace Neo.VM
     public class ExecutionEngine : IDisposable
     {
         private readonly IScriptTable table;
-        private readonly InteropService service;
+        protected readonly InteropService service;
 
         public IScriptContainer ScriptContainer { get; }
         public ICrypto Crypto { get; }
@@ -29,12 +29,12 @@ namespace Neo.VM
             this.service = service ?? new InteropService();
         }
 
-        public void AddBreakPoint(uint position)
+        public virtual void AddBreakPoint(uint position)
         {
             CurrentContext.BreakPoints.Add(position);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             while (InvocationStack.Count > 0)
                 InvocationStack.Pop().Dispose();
@@ -862,18 +862,18 @@ namespace Neo.VM
             }
         }
 
-        public void LoadScript(byte[] script, bool push_only = false)
+        public virtual void LoadScript(byte[] script, bool push_only = false)
         {
             InvocationStack.Push(new ExecutionContext(this, script, push_only));
         }
 
-        public bool RemoveBreakPoint(uint position)
+        public virtual bool RemoveBreakPoint(uint position)
         {
             if (InvocationStack.Count == 0) return false;
             return CurrentContext.BreakPoints.Remove(position);
         }
 
-        public void StepInto()
+        public virtual void StepInto()
         {
             if (InvocationStack.Count == 0) State |= VMState.HALT;
             if (State.HasFlag(VMState.HALT) || State.HasFlag(VMState.FAULT)) return;
@@ -888,7 +888,7 @@ namespace Neo.VM
             }
         }
 
-        public void StepOut()
+        public virtual void StepOut()
         {
             State &= ~VMState.BREAK;
             int c = InvocationStack.Count;
@@ -896,7 +896,7 @@ namespace Neo.VM
                 StepInto();
         }
 
-        public void StepOver()
+        public virtual void StepOver()
         {
             if (State.HasFlag(VMState.HALT) || State.HasFlag(VMState.FAULT)) return;
             State &= ~VMState.BREAK;
