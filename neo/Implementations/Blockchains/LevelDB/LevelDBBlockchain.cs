@@ -582,7 +582,7 @@ namespace Neo.Implementations.Blockchains.LevelDB
                             //write fulllog
                             if (this.FullLogPath != null)
                             {
-                                string filename = System.IO.Path.Combine(this.FullLogPath, tx.Hash.ToString() + ".fulllog.json");
+                                string filename = System.IO.Path.Combine(this.FullLogPath, tx.Hash.ToString() + ".fulllog.7z");
                                 if (engine.FullLog != null)
                                     engine.FullLog.Save(filename);
                             }

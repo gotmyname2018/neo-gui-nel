@@ -51,6 +51,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\neo-vm\neo-vm.csproj" />
+    <ProjectReference Include="..\SevenZip\SevenZip.csproj" />
   </ItemGroup>
 
 </Project>

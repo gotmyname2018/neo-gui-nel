@@ -46,11 +46,11 @@ namespace Neo.SmartContract.Debug
         {
             MyJson.JsonNode_Object json = new MyJson.JsonNode_Object();
             var type = item.GetType().Name;
-            if(type== "InteropInterface")
+            if (type == "InteropInterface")
             {
                 json.SetDictValue(type, item.GetInterface<VM.IInteropInterface>().GetType().Name);
             }
-            else if(type== "Boolean")
+            else if (type == "Boolean")
             {
                 json.SetDictValue(type, item.GetBoolean().ToString());
             }
@@ -62,7 +62,7 @@ namespace Neo.SmartContract.Debug
             {
                 json.SetDictValue(type, item.GetBigInteger().ToString());
             }
-            else if(item.IsArray||item.IsStruct)
+            else if (item.IsArray || item.IsStruct)
             {
                 MyJson.JsonNode_Array array = new MyJson.JsonNode_Array();
                 json.SetDictValue(type, array);
@@ -78,13 +78,13 @@ namespace Neo.SmartContract.Debug
             MyJson.JsonNode_Object _op = new MyJson.JsonNode_Object();
             _op.SetDictValue("addr", addr);
             _op.SetDictValue("op", op.ToString());
-            if(this.stack!=null)
+            if (this.stack != null)
             {
                 MyJson.JsonNode_Array array = new MyJson.JsonNode_Array();
                 _op.SetDictValue("stack", array);
-                foreach(var r in stack)
+                foreach (var r in stack)
                 {
-                    if(r.ind>0)
+                    if (r.ind > 0)
                     {
                         array.AddArrayValue(r.type.ToString() + "|" + r.ind);
                     }
@@ -161,6 +161,7 @@ namespace Neo.SmartContract.Debug
             if (System.IO.Directory.Exists(path) == false)
                 System.IO.Directory.CreateDirectory(path);
 
+            System.IO.File.Delete(filename+".json");
             System.IO.File.Delete(filename);
 
             var json = new MyJson.JsonNode_Object();
@@ -171,7 +172,17 @@ namespace Neo.SmartContract.Debug
 
             StringBuilder sb = new StringBuilder();
             json.ConvertToStringWithFormat(sb, 0);
-            System.IO.File.WriteAllText(filename, sb.ToString());
+            System.IO.File.WriteAllText(filename + ".json", sb.ToString());
+
+            var compressor = new SevenZip.SevenZipCompressor();
+            compressor.CompressionMethod = SevenZip.CompressionMethod.Lzma2;
+            compressor.CompressionLevel = SevenZip.CompressionLevel.Fast;
+            compressor.FastCompression = true;
+
+            //compressor.path = path;
+            compressor.CompressFiles(filename, System.IO.Path.GetFullPath(filename + ".json"));
+            System.IO.File.Delete(filename + ".json");
+
         }
         public static FullLog Load(string filename)
         {
