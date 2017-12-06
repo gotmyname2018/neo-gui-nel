@@ -6,6 +6,7 @@ namespace Neo.Properties
     internal sealed partial class Settings
     {
         public string DataDirectoryPath { get; }
+        public string FullLogDirectoryPath { get; }
         public string CertCachePath { get; }
         public ushort NodePort { get; }
         public ushort WsPort { get; }
@@ -22,6 +23,7 @@ namespace Neo.Properties
             }
             IConfigurationSection section = new ConfigurationBuilder().AddJsonFile("config.json").Build().GetSection("ApplicationConfiguration");
             this.DataDirectoryPath = section.GetSection("DataDirectoryPath").Value;
+            this.FullLogDirectoryPath = section.GetSection("FullLogDirectoryPath").Value;
             this.CertCachePath = section.GetSection("CertCachePath").Value;
             this.NodePort = ushort.Parse(section.GetSection("NodePort").Value);
             this.WsPort = ushort.Parse(section.GetSection("WsPort").Value);

@@ -147,11 +147,9 @@ namespace Neo.SmartContract
                 result = CheckWitness(engine, ECPoint.DecodePoint(hashOrPubkey, ECCurve.Secp256r1));
             else
             {
-                FullLog?.SysCallInfo("Runtime_CheckWitness", false);
                 return false;
             }
             engine.EvaluationStack.Push(result);
-            FullLog?.SysCallInfo("Runtime_CheckWitness", true, result.ToString());
             return true;
         }
 
@@ -600,7 +598,6 @@ namespace Neo.SmartContract
 
         public override bool Invoke(string method, ExecutionEngine engine)
         {
-            this.FullLog?.SysCall(method);
             return base.Invoke(method, engine);
         }
     }

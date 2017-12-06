@@ -7,6 +7,8 @@ using System;
 using System.Numerics;
 using System.Text;
 using Neo.SmartContract.Debug;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Neo.SmartContract
 {
@@ -244,6 +246,7 @@ namespace Neo.SmartContract
                         if (this.FullLog != null)
                         {
                             this.FullLog.NextOp(CurrentContext.InstructionPointer, nextOpcode);
+                            this.EvaluationStack.ClearRecord();
                         }
                         gas_consumed = checked(gas_consumed + GetPrice(nextOpcode) * ratio);
                         if (!testMode && gas_consumed > gas_amount)
@@ -280,7 +283,16 @@ namespace Neo.SmartContract
                     StepInto();
                     if (FullLog != null)
                     {
-                        LogResult(nextOpcode);
+                        VM.StackItem result = null;
+                        var ltype = this.EvaluationStack.GetLastRecordType();
+                        if (ltype == ExecutionStackRecord.OpType.Push)
+                        {
+                            result = this.EvaluationStack.Peek();
+                        } else if (ltype== ExecutionStackRecord.OpType.Insert)
+                        {
+                            result = this.EvaluationStack.Peek(this.EvaluationStack.record.Last().ind);
+                        }
+                        LogResult(nextOpcode, this.EvaluationStack.record, result);
                     }
                 }
             }
@@ -449,15 +461,15 @@ namespace Neo.SmartContract
             }
             base.LoadScript(script, push_only);
         }
-        void LogResult(VM.OpCode nextOpcode)
+        void LogResult(VM.OpCode nextOpcode,List<VM.ExecutionStackRecord.Op> records,VM.StackItem lastrecord)
         {
-            if (
-                nextOpcode == OpCode.CHECKMULTISIG ||
-                nextOpcode == OpCode.CHECKSIG
-                )
+            if(records!=null&&records.Count>0)
             {
-                var item = this.EvaluationStack.Peek();
-                this.FullLog.OpResult(item);
+                this.FullLog.OPStackRecord(records.ToArray());
+            }
+            if (lastrecord != null)
+            {
+                this.FullLog.OpResult(lastrecord);
             }
         }
 

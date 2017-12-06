@@ -319,7 +319,6 @@ namespace Neo.SmartContract
             StorageContext context = engine.EvaluationStack.Pop().GetInterface<StorageContext>();
             if (!CheckStorageContext(context))
             {
-                FullLog?.SysCallInfo("Storage_Get", false);
                 return false;
             }
             byte[] key = engine.EvaluationStack.Pop().GetByteArray();
@@ -329,7 +328,6 @@ namespace Neo.SmartContract
                 Key = key
             });
             engine.EvaluationStack.Push(item?.Value ?? new byte[0]);
-            FullLog?.SysCallInfo("Storage_Get", true, context.ScriptHash.ToString(), key.ToHexString(), item?.Value?.ToHexString() ?? "00");
             return true;
         }
 
@@ -340,7 +338,6 @@ namespace Neo.SmartContract
             byte[] key = engine.EvaluationStack.Pop().GetByteArray();
             if (key.Length > 1024)
             {
-                FullLog?.SysCallInfo("Storage_Put", false);
                 return false;
             }
             byte[] value = engine.EvaluationStack.Pop().GetByteArray();
@@ -349,7 +346,6 @@ namespace Neo.SmartContract
                 ScriptHash = context.ScriptHash,
                 Key = key
             }, () => new StorageItem()).Value = value;
-            FullLog?.SysCallInfo("", true, context.ScriptHash.ToString(), context.ScriptHash.ToString(), key.ToHexString(), value.ToHexString());
             return true;
         }
 
@@ -358,7 +354,6 @@ namespace Neo.SmartContract
             StorageContext context = engine.EvaluationStack.Pop().GetInterface<StorageContext>();
             if (!CheckStorageContext(context))
             {
-                FullLog?.SysCallInfo("Storage_Delete", false);
                 return false;
             }
             byte[] key = engine.EvaluationStack.Pop().GetByteArray();
@@ -367,7 +362,6 @@ namespace Neo.SmartContract
                 ScriptHash = context.ScriptHash,
                 Key = key
             });
-            FullLog?.SysCallInfo("Storage_Delete", true, context.ScriptHash.ToString(), key.ToHexString());
             return true;
         }
 

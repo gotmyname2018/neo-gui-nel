@@ -32,8 +32,9 @@ namespace Neo.SmartContract.Debug
     {
         public int addr;
         public VM.OpCode op;
-        public string syscall;
-        public string[] syscallinfo;
+        //public string syscall;
+        //public string[] syscallinfo;
+        public VM.ExecutionStackRecord.Op[] stack;
         public VM.StackItem opresult;
         public LogOp(int addr, VM.OpCode op)
         {
@@ -44,7 +45,7 @@ namespace Neo.SmartContract.Debug
         public static MyJson.JsonNode_Object StatkItemToJson(VM.StackItem item)
         {
             MyJson.JsonNode_Object json = new MyJson.JsonNode_Object();
-            var type = item.GetType().ToString();
+            var type = item.GetType().Name;
             if(type== "InteropInterface")
             {
                 json.SetDictValue(type, item.GetInterface<VM.IInteropInterface>().GetType().Name);
@@ -77,17 +78,19 @@ namespace Neo.SmartContract.Debug
             MyJson.JsonNode_Object _op = new MyJson.JsonNode_Object();
             _op.SetDictValue("addr", addr);
             _op.SetDictValue("op", op.ToString());
-            if (string.IsNullOrEmpty(syscall) == false)
+            if(this.stack!=null)
             {
-                _op.SetDictValue("syscall", syscall);
-                if (syscallinfo != null)
+                MyJson.JsonNode_Array array = new MyJson.JsonNode_Array();
+                _op.SetDictValue("stack", array);
+                foreach(var r in stack)
                 {
-                    var infoarr = new MyJson.JsonNode_Array();
-                    _op.SetDictValue("syscallinfo", infoarr);
-
-                    foreach (var info in syscallinfo)
+                    if(r.ind>0)
                     {
-                        infoarr.AddArrayValue(info);
+                        array.AddArrayValue(r.type.ToString() + "|" + r.ind);
+                    }
+                    else
+                    {
+                        array.AddArrayValue(r.type.ToString());
                     }
                 }
             }
@@ -136,15 +139,9 @@ namespace Neo.SmartContract.Debug
                 curScript = curScript.parent;
             }
         }
-        public void SysCall(string name)
+        public void OPStackRecord(VM.ExecutionStackRecord.Op[] records)
         {
-            curOp.syscall = name;
-        }
-        public void SysCallInfo(string name, bool result, params string[] args)
-        {
-            string[] syscallinfo = new string[args.Length + 1];
-            syscallinfo[0] = result.ToString();
-            Array.Copy(args, 0, syscallinfo, 1, args.Length);
+            curOp.stack = records;
         }
         public void OpResult(VM.StackItem item)
         {

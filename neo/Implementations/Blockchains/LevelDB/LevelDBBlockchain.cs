@@ -30,9 +30,20 @@ namespace Neo.Implementations.Blockchains.LevelDB
         public override uint HeaderHeight => (uint)header_index.Count - 1;
         public override uint Height => current_block_height;
         public bool VerifyBlocks { get; set; } = true;
-
-        public LevelDBBlockchain(string path)
+        public string FullLogPath;
+        public LevelDBBlockchain(string path, string fulllogpath = null)
         {
+            this.FullLogPath = fulllogpath;
+            if (string.IsNullOrEmpty(this.FullLogPath) == false)
+            {
+                if (System.IO.Directory.Exists(FullLogPath) == false)
+                    System.IO.Directory.CreateDirectory(FullLogPath);
+            }
+            else
+            {
+                this.FullLogPath = null;
+            }
+
             header_index.Add(GenesisBlock.Hash);
             Version version;
             Slice value;
@@ -556,11 +567,24 @@ namespace Neo.Implementations.Blockchains.LevelDB
                             CachedScriptTable script_table = new CachedScriptTable(contracts);
                             StateMachine service = new StateMachine(accounts, validators, assets, contracts, storages);
                             ApplicationEngine engine = new ApplicationEngine(TriggerType.Application, itx, script_table, service, itx.Gas);
+
+                            ///add log
+                            if (this.FullLogPath != null)
+                                engine.BeginDebug();
+
                             engine.LoadScript(itx.Script, false);
                             if (engine.Execute())
                             {
                                 service.Commit();
                                 notifications.AddRange(service.Notifications);
+                            }
+
+                            //write fulllog
+                            if (this.FullLogPath != null)
+                            {
+                                string filename = System.IO.Path.Combine(this.FullLogPath, tx.Hash.ToString() + ".fulllog.json");
+                                if (engine.FullLog != null)
+                                    engine.FullLog.Save(filename);
                             }
                         }
                         break;

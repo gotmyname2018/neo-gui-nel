@@ -1,6 +1,7 @@
 ﻿{
   "ApplicationConfiguration": {
     "DataDirectoryPath": "D:\\Neo\\ChainTestNet",
+    "FullLogDirectoryPath": "d:\\Neo\\FullLogs",
     "CertCachePath": "Certs",
     "NodePort": 20333,
     "WsPort": 20334,
@@ -8,9 +9,9 @@
     "SslCert": "",
     "SslCertPassword": "",
     "Urls": {
-      "AddressUrl": "http://testnet.antchain.xyz/address/{0}",
-      "AssetUrl": "http://testnet.antchain.xyz/asset/hash/{0}",
-      "TransactionUrl": "http://testnet.antchain.xyz/tx/hash/{0}"
+      "AddressUrl": "https://neoscan-testnet.io/address/{0}",
+      "AssetUrl": "https://neoscan-testnet.io/asset/{0}",
+      "TransactionUrl": "https://neoscan-testnet.io/transaction/{0}"
     }
   }
 }

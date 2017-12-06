@@ -6,6 +6,80 @@ using System.Text;
 
 namespace Neo.VM
 {
+    public class ExecutionStackRecord : RandomAccessStack<StackItem>
+    {
+        public enum OpType
+        {
+            Non,
+            Clear,
+            Insert,
+            Pop,
+            Push,
+            Remove,
+            Set,
+        }
+        public struct Op
+        {
+            public Op(OpType type, int ind = -1)
+            {
+                this.type = type;
+                this.ind = ind;
+            }
+            public OpType type;
+            public int ind;
+        }
+
+        public System.Collections.Generic.List<Op> record = new System.Collections.Generic.List<Op>();
+        public void ClearRecord()
+        {
+            record.Clear();
+        }
+        public OpType GetLastRecordType()
+        {
+            if (record.Count == 0)
+                return OpType.Non;
+            else
+                return record.Last().type;
+        }
+        public new void Clear()
+        {
+            record.Add(new Op(OpType.Clear));
+            base.Clear();
+        }
+        public new void Insert(int index, StackItem item)
+        {
+            record.Add(new Op(OpType.Insert, index));
+            base.Insert(index, item);
+        }
+
+
+        public new StackItem Pop()
+        {
+            record.Add(new Op(OpType.Pop));
+            return base.Remove(0);
+        }
+
+        public new void Push(StackItem item)
+        {
+            record.Add(new Op(OpType.Push));
+            base.Push(item);
+        }
+
+        public new StackItem Remove(int index)
+        {
+            if (index == 0)
+                return Pop();
+
+            record.Add(new Op(OpType.Remove,index));
+            return base.Remove(index);
+        }
+
+        public new void Set(int index, StackItem item)
+        {
+            record.Add(new Op(OpType.Set, index));
+            base.Set(index, item);
+        }
+    }
     public class ExecutionEngine : IDisposable
     {
         private readonly IScriptTable table;
@@ -14,7 +88,7 @@ namespace Neo.VM
         public IScriptContainer ScriptContainer { get; }
         public ICrypto Crypto { get; }
         public RandomAccessStack<ExecutionContext> InvocationStack { get; } = new RandomAccessStack<ExecutionContext>();
-        public RandomAccessStack<StackItem> EvaluationStack { get; } = new RandomAccessStack<StackItem>();
+        public ExecutionStackRecord EvaluationStack { get; } = new ExecutionStackRecord();
         public RandomAccessStack<StackItem> AltStack { get; } = new RandomAccessStack<StackItem>();
         public ExecutionContext CurrentContext => InvocationStack.Peek();
         public ExecutionContext CallingContext => InvocationStack.Count > 1 ? InvocationStack.Peek(1) : null;
