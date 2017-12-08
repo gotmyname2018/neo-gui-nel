@@ -29,6 +29,7 @@ namespace Neo.SmartContract
             Register("Neo.Blockchain.GetValidators", Blockchain_GetValidators);
             Register("Neo.Blockchain.GetAsset", Blockchain_GetAsset);
             Register("Neo.Blockchain.GetContract", Blockchain_GetContract);
+            Register("Neo.Header.GetIndex", Header_GetIndex);
             Register("Neo.Header.GetHash", Header_GetHash);
             Register("Neo.Header.GetVersion", Header_GetVersion);
             Register("Neo.Header.GetPrevHash", Header_GetPrevHash);
@@ -146,9 +147,7 @@ namespace Neo.SmartContract
             else if (hashOrPubkey.Length == 33)
                 result = CheckWitness(engine, ECPoint.DecodePoint(hashOrPubkey, ECCurve.Secp256r1));
             else
-            {
                 return false;
-            }
             engine.EvaluationStack.Push(result);
             return true;
         }
@@ -277,6 +276,14 @@ namespace Neo.SmartContract
             ContractState contract = Blockchain.Default.GetContract(hash);
             if (contract == null) return false;
             engine.EvaluationStack.Push(StackItem.FromInterface(contract));
+            return true;
+        }
+
+        protected virtual bool Header_GetIndex(ExecutionEngine engine)
+        {
+            BlockBase header = engine.EvaluationStack.Pop().GetInterface<BlockBase>();
+            if (header == null) return false;
+            engine.EvaluationStack.Push(header.Index);
             return true;
         }
 

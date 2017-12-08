@@ -223,13 +223,11 @@ namespace Neo.VM
                                 return;
                             }
                             bool fValue = true;
-                            if (opcode == OpCode.JMPIF)
+                            if (opcode > OpCode.JMP)
                             {
                                 fValue = EvaluationStack.Pop().GetBoolean();
-                            }
-                            else if (opcode == OpCode.JMPIFNOT)
-                            {
-                                fValue = !EvaluationStack.Pop().GetBoolean();
+                                if (opcode == OpCode.JMPIFNOT)
+                                    fValue = !fValue;
                             }
                             if (fValue)
                                 context.InstructionPointer = offset;
@@ -280,8 +278,14 @@ namespace Neo.VM
                                 State |= VMState.FAULT;
                                 return;
                             }
+                            
                             byte[] script_hash = context.OpReader.ReadBytes(20);
                             SetParam(opcode, script_hash);
+                            if (script_hash.All(p => p == 0))
+                            {
+                                script_hash = EvaluationStack.Pop().GetByteArray();
+                            }
+
                             byte[] script = table.GetScript(script_hash);
                             if (script == null)
                             {

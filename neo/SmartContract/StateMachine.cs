@@ -317,10 +317,7 @@ namespace Neo.SmartContract
         protected override bool Storage_Get(ExecutionEngine engine)
         {
             StorageContext context = engine.EvaluationStack.Pop().GetInterface<StorageContext>();
-            if (!CheckStorageContext(context))
-            {
-                return false;
-            }
+            if (!CheckStorageContext(context)) return false;
             byte[] key = engine.EvaluationStack.Pop().GetByteArray();
             StorageItem item = storages.TryGet(new StorageKey
             {
@@ -336,10 +333,7 @@ namespace Neo.SmartContract
             StorageContext context = engine.EvaluationStack.Pop().GetInterface<StorageContext>();
             if (!CheckStorageContext(context)) return false;
             byte[] key = engine.EvaluationStack.Pop().GetByteArray();
-            if (key.Length > 1024)
-            {
-                return false;
-            }
+            if (key.Length > 1024) return false;
             byte[] value = engine.EvaluationStack.Pop().GetByteArray();
             storages.GetAndChange(new StorageKey
             {
@@ -352,10 +346,7 @@ namespace Neo.SmartContract
         private bool Storage_Delete(ExecutionEngine engine)
         {
             StorageContext context = engine.EvaluationStack.Pop().GetInterface<StorageContext>();
-            if (!CheckStorageContext(context))
-            {
-                return false;
-            }
+            if (!CheckStorageContext(context)) return false;
             byte[] key = engine.EvaluationStack.Pop().GetByteArray();
             storages.Delete(new StorageKey
             {
@@ -364,6 +355,5 @@ namespace Neo.SmartContract
             });
             return true;
         }
-
     }
 }
