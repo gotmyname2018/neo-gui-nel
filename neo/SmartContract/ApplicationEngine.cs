@@ -288,7 +288,8 @@ namespace Neo.SmartContract
                         if (ltype == ExecutionStackRecord.OpType.Push)
                         {
                             result = this.EvaluationStack.Peek();
-                        } else if (ltype== ExecutionStackRecord.OpType.Insert)
+                        }
+                        else if (ltype== ExecutionStackRecord.OpType.Insert)
                         {
                             result = this.EvaluationStack.Peek(this.EvaluationStack.record.Last().ind);
                         }
@@ -310,7 +311,10 @@ namespace Neo.SmartContract
             }
             return !State.HasFlag(VMState.FAULT);
         }
-
+        public override void SetParam(OpCode opcode, byte[] opdata)
+        {
+            this.FullLog.SetParam(opcode, opdata);
+        }
         protected virtual long GetPrice(OpCode nextInstruction)
         {
             if (nextInstruction <= OpCode.PUSH16) return 0;

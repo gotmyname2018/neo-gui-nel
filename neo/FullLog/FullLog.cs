@@ -36,6 +36,7 @@ namespace Neo.SmartContract.Debug
         //public string[] syscallinfo;
         public VM.ExecutionStackRecord.Op[] stack;
         public VM.StackItem opresult;
+        public byte[] opparam;
         public LogOp(int addr, VM.OpCode op)
         {
             this.addr = addr;
@@ -98,10 +99,15 @@ namespace Neo.SmartContract.Debug
             {
                 _op.SetDictValue("result", StatkItemToJson(opresult));
             }
+            if (opparam != null)
+            {
+                _op.SetDictValue("param", opparam.ToHexString());
+            }
             if (subScript != null)
             {
                 _op.SetDictValue("subscript", subScript.ToJson());
             }
+
             return _op;
         }
     }
@@ -139,6 +145,14 @@ namespace Neo.SmartContract.Debug
                 curScript = curScript.parent;
             }
         }
+        public void SetParam(VM.OpCode _op, byte[] data)
+        {
+            var op = curScript.ops.Last();
+            if(op.op== _op)
+            {
+                op.opparam = data;
+            }
+        }
         public void OPStackRecord(VM.ExecutionStackRecord.Op[] records)
         {
             curOp.stack = records;
@@ -161,7 +175,7 @@ namespace Neo.SmartContract.Debug
             if (System.IO.Directory.Exists(path) == false)
                 System.IO.Directory.CreateDirectory(path);
 
-            System.IO.File.Delete(filename+".json");
+            System.IO.File.Delete(filename + ".json");
             System.IO.File.Delete(filename);
 
             var json = new MyJson.JsonNode_Object();

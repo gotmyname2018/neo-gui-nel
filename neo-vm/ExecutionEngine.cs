@@ -281,6 +281,7 @@ namespace Neo.VM
                                 return;
                             }
                             byte[] script_hash = context.OpReader.ReadBytes(20);
+                            SetParam(opcode, script_hash);
                             byte[] script = table.GetScript(script_hash);
                             if (script == null)
                             {
@@ -289,12 +290,17 @@ namespace Neo.VM
                             }
                             if (opcode == OpCode.TAILCALL)
                                 InvocationStack.Pop().Dispose();
+
                             LoadScript(script);
                         }
                         break;
                     case OpCode.SYSCALL:
-                        if (!service.Invoke(Encoding.ASCII.GetString(context.OpReader.ReadVarBytes(252)), this))
-                            State |= VMState.FAULT;
+                        {
+                            byte[] data = context.OpReader.ReadVarBytes(252);
+                            SetParam(opcode, data);
+                            if (!service.Invoke(Encoding.ASCII.GetString(data), this))
+                                State |= VMState.FAULT;
+                        }
                         break;
 
                     // Stack ops
@@ -940,7 +946,10 @@ namespace Neo.VM
                     State |= VMState.BREAK;
             }
         }
+        public virtual void SetParam(VM.OpCode opcode, byte[] opdata)
+        {
 
+        }
         public virtual void LoadScript(byte[] script, bool push_only = false)
         {
             InvocationStack.Push(new ExecutionContext(this, script, push_only));
