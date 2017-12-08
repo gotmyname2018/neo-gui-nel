@@ -13,6 +13,7 @@ namespace Neo.VM
             Non,
             Clear,
             Insert,
+            Peek,
             Pop,
             Push,
             Remove,
@@ -51,7 +52,11 @@ namespace Neo.VM
             record.Add(new Op(OpType.Insert, index));
             base.Insert(index, item);
         }
-
+        public new StackItem Peek(int index = 0)
+        {
+            record.Add(new Op(OpType.Peek, index));
+            return base.Peek();
+        }
 
         public new StackItem Pop()
         {
@@ -70,7 +75,7 @@ namespace Neo.VM
             if (index == 0)
                 return Pop();
 
-            record.Add(new Op(OpType.Remove,index));
+            record.Add(new Op(OpType.Remove, index));
             return base.Remove(index);
         }
 
