@@ -55,9 +55,12 @@ namespace Neo.VM
         public new StackItem Peek(int index = 0)
         {
             record.Add(new Op(OpType.Peek, index));
-            return base.Peek();
+            return base.Peek(index);
         }
-
+        public StackItem PeekWithoutLog(int index = 0)
+        {
+            return base.Peek(index);
+        }
         public new StackItem Pop()
         {
             record.Add(new Op(OpType.Pop));

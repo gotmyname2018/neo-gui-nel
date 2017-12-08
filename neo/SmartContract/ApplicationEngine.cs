@@ -284,20 +284,21 @@ namespace Neo.SmartContract
                     if (FullLog != null)
                     {
                         VM.StackItem result = null;
+                        ExecutionStackRecord.Op[] record = this.EvaluationStack.record.ToArray();
                         var ltype = this.EvaluationStack.GetLastRecordType();
                         if (ltype == ExecutionStackRecord.OpType.Push)
                         {
-                            result = this.EvaluationStack.Peek();
+                            result = this.EvaluationStack.PeekWithoutLog();
                         }
-                        else if (ltype== ExecutionStackRecord.OpType.Insert)
+                        else if (ltype == ExecutionStackRecord.OpType.Insert)
                         {
-                            result = this.EvaluationStack.Peek(this.EvaluationStack.record.Last().ind);
+                            result = this.EvaluationStack.PeekWithoutLog(this.EvaluationStack.record.Last().ind);
                         }
-                        else if(ltype== ExecutionStackRecord.OpType.Set)
+                        else if (ltype == ExecutionStackRecord.OpType.Set)
                         {
-                            result = this.EvaluationStack.Peek(this.EvaluationStack.record.Last().ind);
+                            result = this.EvaluationStack.PeekWithoutLog(this.EvaluationStack.record.Last().ind);
                         }
-                        LogResult(nextOpcode, this.EvaluationStack.record, result);
+                        LogResult(nextOpcode, record, result);
                     }
                 }
             }
@@ -469,9 +470,9 @@ namespace Neo.SmartContract
             }
             base.LoadScript(script, push_only);
         }
-        void LogResult(VM.OpCode nextOpcode,List<VM.ExecutionStackRecord.Op> records,VM.StackItem lastrecord)
+        void LogResult(VM.OpCode nextOpcode, VM.ExecutionStackRecord.Op[] records, VM.StackItem lastrecord)
         {
-            if(records!=null&&records.Count>0)
+            if (records != null && records.Length > 0)
             {
                 this.FullLog.OPStackRecord(records.ToArray());
             }
