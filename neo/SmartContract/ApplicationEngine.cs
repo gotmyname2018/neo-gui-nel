@@ -292,6 +292,10 @@ namespace Neo.SmartContract
                         {
                             result = this.EvaluationStack.Peek(this.EvaluationStack.record.Last().ind);
                         }
+                        else if(ltype== ExecutionStackRecord.OpType.Set)
+                        {
+                            result = this.EvaluationStack.Peek(this.EvaluationStack.record.Last().ind);
+                        }
                         LogResult(nextOpcode, this.EvaluationStack.record, result);
                     }
                 }
