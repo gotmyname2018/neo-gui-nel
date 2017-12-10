@@ -296,6 +296,52 @@ namespace Neo.Network.RPC
                         json["useragent"] = LocalNode.UserAgent;
                         return json;
                     }
+                case "getfullloginfo":
+                    {
+                        UInt256 hash = UInt256.Parse(_params[0].AsString());
+
+                        try
+                        {
+                            var filename = System.IO.Path.Combine(this.pathFullLog, hash.ToString() + ".fulllog.7z");
+                            if (System.IO.File.Exists(filename))
+                            {
+                                var file = System.IO.File.ReadAllBytes(filename).ToHexString();
+                                JObject json = new JString(file);
+                                return json;
+                            }
+                            else
+                            {
+                                throw new RpcException(-100, "do not find fulllog transaction");
+                            }
+                        }
+                        catch(Exception err)
+                        {
+                            throw new RpcException(-100, err.Message);
+
+                        }
+                    }
+                case "getnotifyinfo":
+                    {
+                        try
+                        {
+                            uint index = (uint)_params[0].AsNumber();
+                            var filename = System.IO.Path.Combine(this.pathNotify, $"block-{index}.json");
+                            if (System.IO.File.Exists(filename))
+                            {
+                                JObject obj = JObject.Parse(System.IO.File.ReadAllText(filename));
+                                return obj;
+                            }
+                            else
+                            {
+                                throw new RpcException(-100, "do not find notify block");
+                            }
+                        }
+                        catch (Exception err)
+                        {
+                            throw new RpcException(-100, err.Message);
+
+                        }
+                    }
                 default:
                     throw new RpcException(-32601, "Method not found");
             }
@@ -390,9 +436,12 @@ namespace Neo.Network.RPC
             response["result"] = result;
             return response;
         }
-
-        public void Start(int port, string sslCert = null, string password = null)
+        string pathNotify;
+        string pathFullLog;
+        public void Start(int port, string sslCert, string password, string pathNotify, string pathFullLog)
         {
+            this.pathNotify = pathNotify;
+            this.pathFullLog = pathFullLog;
             host = new WebHostBuilder().UseKestrel(options => options.Listen(IPAddress.Any, port, listenOptions =>
             {
                 if (!string.IsNullOrEmpty(sslCert))

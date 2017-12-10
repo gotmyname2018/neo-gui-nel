@@ -1,0 +1,18 @@
+﻿{
+  "ApplicationConfiguration": {
+    "Paths": {
+      "Chain": "D:\\NeoCli\\ChainTestNet",
+      "Notifications": "D:\\NeoCli\\Notifications",
+      "Fulllogs": "D:\\NeoCli\\FullLogs"
+    },
+    "P2P": {
+      "Port": 20333,
+      "WsPort": 20334
+    },
+    "RPC": {
+      "Port": 20332,
+      "SslCert": "",
+      "SslCertPassword": ""
+    }
+  }
+}
