@@ -408,7 +408,7 @@ namespace Neo.Network.RPC
                 response = ProcessRequest(request);
             }
             if (response == null || (response as JArray)?.Count == 0) return;
-            context.Response.ContentType = "application/json-rpc";
+            context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(response.ToString());
         }
 

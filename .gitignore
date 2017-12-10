@@ -250,3 +250,4 @@ paket-files/
 *.sln.iml
 
 PublishProfiles
+/neo-cli/peers.dat
