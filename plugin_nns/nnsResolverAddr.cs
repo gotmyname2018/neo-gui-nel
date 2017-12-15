@@ -225,7 +225,7 @@ namespace plugin_nns
             {
                 context.Verifiable.Scripts = context.GetScripts();
                 var a = context.ToJson();
-                plugin_nns.api.CurrentWallet.SaveTransaction(t);
+                plugin_nns.api.CurrentWallet.ApplyTransaction(t);
                 plugin_nns.api.LocalNode.Relay(t);
 
                 //InformationBox.Show(t.Hash.ToString(), Strings.SendTxSucceedMessage, Strings.SendTxSucceedTitle);

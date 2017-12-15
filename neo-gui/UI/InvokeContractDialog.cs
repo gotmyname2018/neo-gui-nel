@@ -44,6 +44,19 @@ namespace Neo.UI
             }, fee: fee);
         }
 
+        public InvocationTransaction GetTransaction(UInt160 change_address, Fixed8 fee)
+        {
+            return Program.CurrentWallet.MakeTransaction(new InvocationTransaction
+            {
+                Version = tx.Version,
+                Script = tx.Script,
+                Gas = tx.Gas,
+                Attributes = tx.Attributes,
+                Inputs = tx.Inputs,
+                Outputs = tx.Outputs
+            }, change_address, fee);
+        }
+
         private void UpdateScript()
         {
             if (parameters.Any(p => p.Value == null)) return;
@@ -90,19 +103,28 @@ namespace Neo.UI
 
         private void button5_Click(object sender, EventArgs e)
         {
+            byte[] script;
+            try
+            {
+                script = textBox6.Text.Trim().HexToBytes();
+            }
+            catch (FormatException ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
             if (tx == null) tx = new InvocationTransaction();
             tx.Version = 1;
-            tx.Script = textBox6.Text.HexToBytes();
+            tx.Script = script;
             if (tx.Attributes == null) tx.Attributes = new TransactionAttribute[0];
             if (tx.Inputs == null) tx.Inputs = new CoinReference[0];
             if (tx.Outputs == null) tx.Outputs = new TransactionOutput[0];
             if (tx.Scripts == null) tx.Scripts = new Witness[0];
-            ApplicationEngine engine = ApplicationEngine.RunWithDebug(tx.Script, tx);
+            ApplicationEngine engine = ApplicationEngine.Run(tx.Script, tx);
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"VM State: {engine.State}");
             sb.AppendLine($"Gas Consumed: {engine.GasConsumed}");
             sb.AppendLine($"Evaluation Stack: {new JArray(engine.EvaluationStack.Select(p => p.ToParameter().ToJson()))}");
-            engine.FullLog.Save(System.IO.Path.Combine(Settings.Default.FullLogDirectoryPath, "0x00.fulllog.7z"));
             textBox7.Text = sb.ToString();
             if (!engine.State.HasFlag(VMState.FAULT))
             {

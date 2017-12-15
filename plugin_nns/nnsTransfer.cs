@@ -43,14 +43,20 @@ namespace plugin_nns
             if (plugin_nns.api.CurrentWallet != null)
             {
                 var currWallet = plugin_nns.api.CurrentWallet;
-                foreach (UInt160 addrOut in currWallet.GetAddresses())
+                foreach (var s in currWallet.GetAccounts())
                 {
+                    var addrOut = s.ScriptHash;
                     string addrStr = Wallet.ToAddress(addrOut);
-
-                    dAddress.Add(addrStr, addrOut);
-
                     comAddrOut.Items.Add(addrStr);
                 }
+                //foreach (UInt160 addrOut in currWallet.GetAddresses())
+                //{
+                //    string addrStr = Wallet.ToAddress(addrOut);
+
+                //    dAddress.Add(addrStr, addrOut);
+
+                //    comAddrOut.Items.Add(addrStr);
+                //}
                 comAddrOut.SelectedIndex = 0;
                 comAddrOut.Refresh();
 
@@ -78,7 +84,7 @@ namespace plugin_nns
             //Call the Process.Start method to open the default browser 
             //with a URL:
             string txid = linkTXID.Text;
-            txid = txid.Substring(7, txid.Length-7);
+            txid = txid.Substring(7, txid.Length - 7);
             string url = "https://neoscan-testnet.io/transaction/" + txid;
             System.Diagnostics.Process.Start(url);
         }
@@ -334,14 +340,19 @@ namespace plugin_nns
             JObject j = JObject.Parse(resp);
             string transactionScript = (string)j["transaction"];
 
-            string publickey = plugin_nns.api.CurrentWallet.GetKeys().First().PublicKey.EncodePoint(true).ToHexString();
+
+
+            var Key = plugin_nns.api.CurrentWallet.GetAccounts().First().GetKey();
+            string publickey = Key.PublicKey.EncodePoint(true).ToHexString();
+
+            //string publickey = plugin_nns.api.CurrentWallet.GetKeys().First().PublicKey.EncodePoint(true).ToHexString();
             //ContractParametersContext context = ContractParametersContext.Parse(transactionScript);
             //string signature = context.ToString();
 
-            var Key = plugin_nns.api.CurrentWallet.GetKeys().First();
+            //var Key = plugin_nns.api.CurrentWallet.GetKeys().First();
             Key.Decrypt();
             var pk = Key.PrivateKey;
-            string signature = Sign(transactionScript.HexToBytes(), pk).ToHexString();         
+            string signature = Sign(transactionScript.HexToBytes(), pk).ToHexString();
 
 
             Dictionary<string, string> data2 = new Dictionary<string, string>() {

@@ -43,6 +43,8 @@ namespace Neo.SmartContract
         private long gas_consumed = 0;
         private readonly bool testMode;
 
+        private readonly CachedScriptTable script_table;
+
         public TriggerType Trigger { get; }
         public Fixed8 GasConsumed => new Fixed8(gas_consumed);
 
@@ -52,6 +54,10 @@ namespace Neo.SmartContract
             this.gas_amount = gas_free + gas.GetData();
             this.testMode = testMode;
             this.Trigger = trigger;
+            if (table is CachedScriptTable)
+            {
+                this.script_table = (CachedScriptTable)table;
+            }
         }
 
         private bool CheckArraySize(OpCode nextInstruction)
@@ -224,12 +230,29 @@ namespace Neo.SmartContract
                     case OpCode.UNPACK:
                         StackItem item = EvaluationStack.Peek();
                         if (!item.IsArray) return false;
-                        size = item.GetArray().Length;
+                        size = item.GetArray().Count;
                         break;
                 }
             if (size == 0) return true;
             size += EvaluationStack.Count + AltStack.Count;
             if (size > MaxStackSize) return false;
+            return true;
+        }
+
+        private bool CheckDynamicInvoke(OpCode nextInstruction)
+        {
+            if (nextInstruction == OpCode.APPCALL || nextInstruction == OpCode.TAILCALL)
+            {
+                for (int i = CurrentContext.InstructionPointer + 1; i < CurrentContext.InstructionPointer + 21; i++)
+                {
+                    if (CurrentContext.Script[i] != 0) return true;
+                }
+                // if we get this far it is a dynamic call
+                // now look at the current executing script
+                // to determine if it can do dynamic calls
+                ContractState contract = script_table.GetContractState(CurrentContext.ScriptHash);
+                return contract.HasDynamicInvoke;
+            }
             return true;
         }
 
@@ -302,7 +325,7 @@ namespace Neo.SmartContract
                     }
                 }
             }
-            catch
+            catch(Exception err)
             {
                 return false;
             }
@@ -383,6 +406,7 @@ namespace Neo.SmartContract
                     return 100;
                 case "Neo.Transaction.GetReferences":
                 case "AntShares.Transaction.GetReferences":
+                case "Neo.Transaction.GetUnspentCoins":
                     return 200;
                 case "Neo.Account.SetVotes":
                 case "AntShares.Account.SetVotes":
@@ -400,7 +424,19 @@ namespace Neo.SmartContract
                 case "Neo.Contract.Migrate":
                 case "AntShares.Contract.Create":
                 case "AntShares.Contract.Migrate":
-                    return 500L * 100000000L / ratio;
+                    long fee = 100L;
+
+                    ContractPropertyState contract_properties = (ContractPropertyState)(byte)EvaluationStack.Peek(3).GetBigInteger();
+
+                    if (contract_properties.HasFlag(ContractPropertyState.HasStorage))
+                    {
+                        fee += 400L;
+                    }
+                    if (contract_properties.HasFlag(ContractPropertyState.HasDynamicInvoke))
+                    {
+                        fee += 500L;
+                    }
+                    return fee * 100000000L / ratio;
                 case "Neo.Storage.Get":
                 case "AntShares.Storage.Get":
                     return 100;
@@ -415,30 +451,66 @@ namespace Neo.SmartContract
             }
         }
 
-        public static ApplicationEngine RunWithDebug(byte[] script, IScriptContainer container = null)
+        public static ApplicationEngine RunWithDebug(byte[] script, IScriptContainer container = null, Block persisting_block = null)
         {
+            if (persisting_block == null)
+                persisting_block = new Block
+                {
+                    Version = 0,
+                    PrevHash = Blockchain.Default.CurrentBlockHash,
+                    MerkleRoot = new UInt256(),
+                    Timestamp = Blockchain.Default.GetHeader(Blockchain.Default.Height).Timestamp + Blockchain.SecondsPerBlock,
+                    Index = Blockchain.Default.Height + 1,
+                    ConsensusData = 0,
+                    NextConsensus = Blockchain.Default.GetHeader(Blockchain.Default.Height).NextConsensus,
+                    Script = new Witness
+                    {
+                        InvocationScript = new byte[0],
+                        VerificationScript = new byte[0]
+                    },
+                    Transactions = new Transaction[0]
+                };
             DataCache<UInt160, AccountState> accounts = Blockchain.Default.CreateCache<UInt160, AccountState>();
             DataCache<ECPoint, ValidatorState> validators = Blockchain.Default.CreateCache<ECPoint, ValidatorState>();
             DataCache<UInt256, AssetState> assets = Blockchain.Default.CreateCache<UInt256, AssetState>();
             DataCache<UInt160, ContractState> contracts = Blockchain.Default.CreateCache<UInt160, ContractState>();
             DataCache<StorageKey, StorageItem> storages = Blockchain.Default.CreateCache<StorageKey, StorageItem>();
             CachedScriptTable script_table = new CachedScriptTable(contracts);
-            StateMachine service = new StateMachine(accounts, validators, assets, contracts, storages);
+            StateMachine service = new StateMachine(persisting_block, accounts, validators, assets, contracts, storages);
             ApplicationEngine engine = new ApplicationEngine(TriggerType.Application, container, script_table, service, Fixed8.Zero, true);
             engine.BeginDebug();
             engine.LoadScript(script, false);
             engine.Execute();
             return engine;
         }
-        public static ApplicationEngine Run(byte[] script, IScriptContainer container = null)
+		
+		
+        public static ApplicationEngine Run(byte[] script, IScriptContainer container = null, Block persisting_block = null)
         {
+            if (persisting_block == null)
+                persisting_block = new Block
+                {
+                    Version = 0,
+                    PrevHash = Blockchain.Default.CurrentBlockHash,
+                    MerkleRoot = new UInt256(),
+                    Timestamp = Blockchain.Default.GetHeader(Blockchain.Default.Height).Timestamp + Blockchain.SecondsPerBlock,
+                    Index = Blockchain.Default.Height + 1,
+                    ConsensusData = 0,
+                    NextConsensus = Blockchain.Default.GetHeader(Blockchain.Default.Height).NextConsensus,
+                    Script = new Witness
+                    {
+                        InvocationScript = new byte[0],
+                        VerificationScript = new byte[0]
+                    },
+                    Transactions = new Transaction[0]
+                };
             DataCache<UInt160, AccountState> accounts = Blockchain.Default.CreateCache<UInt160, AccountState>();
             DataCache<ECPoint, ValidatorState> validators = Blockchain.Default.CreateCache<ECPoint, ValidatorState>();
             DataCache<UInt256, AssetState> assets = Blockchain.Default.CreateCache<UInt256, AssetState>();
             DataCache<UInt160, ContractState> contracts = Blockchain.Default.CreateCache<UInt160, ContractState>();
             DataCache<StorageKey, StorageItem> storages = Blockchain.Default.CreateCache<StorageKey, StorageItem>();
             CachedScriptTable script_table = new CachedScriptTable(contracts);
-            StateMachine service = new StateMachine(accounts, validators, assets, contracts, storages);
+            StateMachine service = new StateMachine(persisting_block, accounts, validators, assets, contracts, storages);
             ApplicationEngine engine = new ApplicationEngine(TriggerType.Application, container, script_table, service, Fixed8.Zero, true);
             engine.LoadScript(script, false);
             engine.Execute();

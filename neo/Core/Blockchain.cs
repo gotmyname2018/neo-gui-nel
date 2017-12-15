@@ -275,7 +275,9 @@ namespace Neo.Core
         /// <returns>返回对应的区块信息</returns>
         public Block GetBlock(uint height)
         {
-            return GetBlock(GetBlockHash(height));
+            UInt256 hash = GetBlockHash(height);
+            if (hash == null) return null;
+            return GetBlock(hash);
         }
 
         /// <summary>
@@ -424,6 +426,9 @@ namespace Neo.Core
         /// <param name="index">输出的索引</param>
         /// <returns>返回一个交易输出，表示一个未花费的资产</returns>
         public abstract TransactionOutput GetUnspent(UInt256 hash, ushort index);
+
+        public abstract IEnumerable<TransactionOutput> GetUnspent(UInt256 hash);
+
 
         /// <summary>
         /// 获取选票信息

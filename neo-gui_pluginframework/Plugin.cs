@@ -105,7 +105,7 @@ namespace Neo.GUIPlugin
         {
             get;
         }
-        UserWallet CurrentWallet
+        Neo.Wallets.Wallet CurrentWallet
         {
             get;
         }

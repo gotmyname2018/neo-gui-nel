@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
@@ -128,44 +129,7 @@ namespace Neo.VM
             while (!State.HasFlag(VMState.HALT) && !State.HasFlag(VMState.FAULT) && !State.HasFlag(VMState.BREAK))
                 StepInto();
         }
-        int CalcStringHashIL(string str)
-        {
-            if (str == null)
-                return 0;
-            var loc0 = -2128831035;
-            //var loc1 = 0;
-            //while(loc1<str.Length)
-            //{
-            //    var c = str[loc1];
-            //    var v = loc0 ^ c;
-            //    loc0 = loc0 * v;
-            //    loc1++;
-            //}
-            for (var i = 0; i < str.Length; i++)
-            {
-                var c = str[i];
-                var v = c ^ loc0;
-                loc0 = 16777619 * v;
-            }
-            return loc0;
-        }
-        int CalcStringHashJVM(string str)
-        {
-            int hash = 0;
-            int h = hash;
 
-            if (h == 0 && str.Length > 0)
-            {
-
-                for (int i = 0; i < str.Length; i++)
-                {
-                    h = 31 * h + str[i];
-                }
-                hash = h;
-            }
-            return h;
-
-        }
         private void ExecuteOp(OpCode opcode, ExecutionContext context)
         {
             if (opcode > OpCode.PUSH16 && opcode != OpCode.RET && context.PushOnly)
@@ -236,33 +200,6 @@ namespace Neo.VM
                                 context.InstructionPointer = offset;
                         }
                         break;
-                    case OpCode.SWITCH:
-                        {
-                            int index = (int)EvaluationStack.Pop().GetBigInteger();
-                            int count = context.OpReader.ReadInt16();
-
-                            System.Collections.Generic.Dictionary<int, Int16> addrs = new System.Collections.Generic.Dictionary<int, Int16>();
-
-                            for (var i = 0; i < count; i++)
-                            {
-                                var v = context.OpReader.ReadInt32();
-                                var t = context.OpReader.ReadInt16();
-                                addrs.Add(v, t);
-                            }
-                            if (addrs.ContainsKey(index))//如果有就jmp
-                            {
-                                int offset = addrs[index];
-                                //偏移地址要剪掉自己的长度
-                                offset = context.InstructionPointer + offset - (3 + count * 6);
-                                if (offset < 0 || offset > context.Script.Length)
-                                {
-                                    State |= VMState.FAULT;
-                                    return;
-                                }
-                                context.InstructionPointer = offset;
-                            }
-                        }
-                        break;
                     case OpCode.CALL:
                         InvocationStack.Push(context.Clone());
                         context.InstructionPointer += 2;
@@ -281,7 +218,7 @@ namespace Neo.VM
                                 State |= VMState.FAULT;
                                 return;
                             }
-                            
+
                             byte[] script_hash = context.OpReader.ReadBytes(20);
                             SetParam(opcode, script_hash);
                             if (script_hash.All(p => p == 0))
@@ -297,7 +234,6 @@ namespace Neo.VM
                             }
                             if (opcode == OpCode.TAILCALL)
                                 InvocationStack.Pop().Dispose();
-
                             LoadScript(script);
                         }
                         break;
@@ -725,18 +661,6 @@ namespace Neo.VM
                             EvaluationStack.Push(Crypto.Hash256(x));
                         }
                         break;
-                    case OpCode.CSHARPSTRHASH32:
-                        {
-                            var item = EvaluationStack.Pop();
-                            EvaluationStack.Push(CalcStringHashIL(item.GetString()));
-                        }
-                        break;
-                    case OpCode.JAVAHASH32:
-                        {
-                            var item = EvaluationStack.Pop();
-                            EvaluationStack.Push(CalcStringHashJVM(item.GetString()));
-                        }
-                        break;
                     case OpCode.CHECKSIG:
                         {
                             byte[] pubkey = EvaluationStack.Pop().GetByteArray();
@@ -831,7 +755,7 @@ namespace Neo.VM
                             if (!item.IsArray)
                                 EvaluationStack.Push(item.GetByteArray().Length);
                             else
-                                EvaluationStack.Push(item.GetArray().Length);
+                                EvaluationStack.Push(item.GetArray().Count);
                         }
                         break;
                     case OpCode.PACK:
@@ -842,9 +766,9 @@ namespace Neo.VM
                                 State |= VMState.FAULT;
                                 return;
                             }
-                            StackItem[] items = new StackItem[size];
+                            List<StackItem> items = new List<StackItem>(size);
                             for (int i = 0; i < size; i++)
-                                items[i] = EvaluationStack.Pop();
+                                items.Add(EvaluationStack.Pop());
                             EvaluationStack.Push(items);
                         }
                         break;
@@ -856,10 +780,10 @@ namespace Neo.VM
                                 State |= VMState.FAULT;
                                 return;
                             }
-                            StackItem[] items = item.GetArray();
-                            for (int i = items.Length - 1; i >= 0; i--)
+                            IList<StackItem> items = item.GetArray();
+                            for (int i = items.Count - 1; i >= 0; i--)
                                 EvaluationStack.Push(items[i]);
-                            EvaluationStack.Push(items.Length);
+                            EvaluationStack.Push(items.Count);
                         }
                         break;
                     case OpCode.PICKITEM:
@@ -876,8 +800,8 @@ namespace Neo.VM
                                 State |= VMState.FAULT;
                                 return;
                             }
-                            StackItem[] items = item.GetArray();
-                            if (index >= items.Length)
+                            IList<StackItem> items = item.GetArray();
+                            if (index >= items.Count)
                             {
                                 State |= VMState.FAULT;
                                 return;
@@ -888,9 +812,9 @@ namespace Neo.VM
                     case OpCode.SETITEM:
                         {
                             StackItem newItem = EvaluationStack.Pop();
-                            if (newItem.IsStruct)
+                            if (newItem is Types.Struct s)
                             {
-                                newItem = (newItem as Types.Struct).Clone();
+                                newItem = s.Clone();
                             }
                             int index = (int)EvaluationStack.Pop().GetBigInteger();
                             StackItem arrItem = EvaluationStack.Pop();
@@ -899,8 +823,8 @@ namespace Neo.VM
                                 State |= VMState.FAULT;
                                 return;
                             }
-                            StackItem[] items = arrItem.GetArray();
-                            if (index < 0 || index >= items.Length)
+                            IList<StackItem> items = arrItem.GetArray();
+                            if (index < 0 || index >= items.Count)
                             {
                                 State |= VMState.FAULT;
                                 return;
@@ -911,10 +835,10 @@ namespace Neo.VM
                     case OpCode.NEWARRAY:
                         {
                             int count = (int)EvaluationStack.Pop().GetBigInteger();
-                            StackItem[] items = new StackItem[count];
+                            List<StackItem> items = new List<StackItem>(count);
                             for (var i = 0; i < count; i++)
                             {
-                                items[i] = false;
+                                items.Add(false);
                             }
                             EvaluationStack.Push(new Types.Array(items));
                         }
@@ -922,12 +846,41 @@ namespace Neo.VM
                     case OpCode.NEWSTRUCT:
                         {
                             int count = (int)EvaluationStack.Pop().GetBigInteger();
-                            StackItem[] items = new StackItem[count];
+                            List<StackItem> items = new List<StackItem>(count);
                             for (var i = 0; i < count; i++)
                             {
-                                items[i] = false;
+                                items.Add(false);
                             }
                             EvaluationStack.Push(new VM.Types.Struct(items));
+                        }
+                        break;
+                    case OpCode.APPEND:
+                        {
+                            StackItem newItem = EvaluationStack.Pop();
+                            if (newItem is Types.Struct s)
+                            {
+                                newItem = s.Clone();
+                            }
+                            StackItem arrItem = EvaluationStack.Pop();
+                            if (!arrItem.IsArray)
+                            {
+                                State |= VMState.FAULT;
+                                return;
+                            }
+                            IList<StackItem> items = arrItem.GetArray();
+                            items.Add(newItem);
+                        }
+                        break;
+
+                    case OpCode.REVERSE:
+                        {
+                            StackItem arrItem = EvaluationStack.Pop();
+                            if (!arrItem.IsArray)
+                            {
+                                State |= VMState.FAULT;
+                                return;
+                            }
+                            ((Types.Array)arrItem).Reverse();
                         }
                         break;
 

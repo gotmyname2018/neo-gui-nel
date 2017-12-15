@@ -142,13 +142,14 @@ namespace Neo.SmartContract.Debug
             curOp = _op;
             if (op == VM.OpCode.RET || op == VM.OpCode.TAILCALL)
             {
-                curScript = curScript.parent;
+                if (curScript.parent != null)
+                    curScript = curScript.parent;
             }
         }
         public void SetParam(VM.OpCode _op, byte[] data)
         {
             var op = curScript.ops.Last();
-            if(op.op== _op)
+            if (op.op == _op)
             {
                 op.opparam = data;
             }

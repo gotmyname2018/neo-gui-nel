@@ -1,10 +1,15 @@
 ﻿{
   "ApplicationConfiguration": {
-    "DataDirectoryPath": "D:\\Neo\\ChainTestNet",
-    "FullLogDirectoryPath": "d:\\Neo\\FullLogs",
-    "CertCachePath": "Certs",
-    "NodePort": 20333,
-    "WsPort": 20334,
+    "Paths": {
+      "Chain": "D:\\Neo\\ChainTestNet",
+      "FullLog": "d:\\Neo\\FullLogs",
+      "CertCache": "Certs"
+    },
+    "P2P": {
+      "Port": 20333,
+      "WsPort": 20334
+    },
+    
     "UriPrefix": [ "http://*:20332" ],
     "SslCert": "",
     "SslCertPassword": "",
