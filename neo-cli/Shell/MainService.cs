@@ -728,7 +728,7 @@ namespace Neo.Shell
 
         protected internal override void OnStart(string[] args)
         {
-            Blockchain.RegisterBlockchain(new LevelDBBlockchain(Settings.Default.Paths.Chain));
+            Blockchain.RegisterBlockchain(new LevelDBBlockchain(Settings.Default.Paths.Chain,Settings.Default.Paths.Fulllogs));
             if (!args.Contains("--nopeers") && File.Exists(PeerStatePath))
                 using (FileStream fs = new FileStream(PeerStatePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {

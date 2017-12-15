@@ -266,6 +266,7 @@ namespace Neo.SmartContract
                     if (CurrentContext.InstructionPointer < CurrentContext.Script.Length)
                     {
                         nextOpcode = CurrentContext.NextInstruction;
+
                         if (this.FullLog != null)
                         {
                             this.FullLog.NextOp(CurrentContext.InstructionPointer, nextOpcode);
