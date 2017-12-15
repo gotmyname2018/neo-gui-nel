@@ -338,7 +338,8 @@ namespace Neo.SmartContract
         }
         public override void SetParam(OpCode opcode, byte[] opdata)
         {
-            this.FullLog.SetParam(opcode, opdata);
+            if(this.FullLog!=null)
+                this.FullLog.SetParam(opcode, opdata);
         }
         protected virtual long GetPrice(OpCode nextInstruction)
         {
