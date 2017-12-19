@@ -930,7 +930,7 @@ namespace Neo.VM
             {
                 ExecuteOp(opcode, CurrentContext);
             }
-            catch
+            catch(Exception err)
             {
                 State |= VMState.FAULT;
             }
