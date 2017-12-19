@@ -29,6 +29,9 @@
       <PackagePath>content</PackagePath>
       <Pack>true</Pack>
     </None>
+    <None Update="skiplogtran.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

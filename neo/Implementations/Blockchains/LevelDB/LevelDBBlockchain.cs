@@ -32,9 +32,17 @@ namespace Neo.Implementations.Blockchains.LevelDB
         public override uint Height => current_block_height;
         public bool VerifyBlocks { get; set; } = true;
         public string FullLogPath;
+        public List<string> FullLogSkip;
         public LevelDBBlockchain(string path, string fulllogpath = null)
         {
             this.FullLogPath = fulllogpath;
+            if (this.FullLogPath != null)
+            {
+                var runpath = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location);
+                var skipfile = System.IO.Path.Combine(runpath, "skiplogtran.txt");
+                var lines = System.IO.File.ReadLines(skipfile);
+                FullLogSkip = new List<string>(lines);
+            }
             if (string.IsNullOrEmpty(this.FullLogPath) == false)
             {
                 if (System.IO.Directory.Exists(FullLogPath) == false)
@@ -594,7 +602,10 @@ namespace Neo.Implementations.Blockchains.LevelDB
                             ApplicationEngine engine = new ApplicationEngine(TriggerType.Application, itx, script_table, service, itx.Gas);
 
                             ///add log
-                            if (this.FullLogPath != null)
+                            bool bLog = false;
+                            if (this.FullLogPath != null && this.FullLogSkip.Contains(itx.Hash.ToString()) == false)
+                                bLog = true;
+                            if (bLog)
                                 engine.BeginDebug();
 
                             engine.LoadScript(itx.Script, false);
@@ -605,7 +616,7 @@ namespace Neo.Implementations.Blockchains.LevelDB
                             }
 
                             //write fulllog
-                            if (this.FullLogPath != null)
+                            if (bLog)
                             {
                                 string filename = System.IO.Path.Combine(this.FullLogPath, tx.Hash.ToString() + ".fulllog.7z");
                                 if (engine.FullLog != null)
