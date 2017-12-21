@@ -23,6 +23,10 @@
     <DebugSymbols>False</DebugSymbols>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>bin\Debug</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Update="protocol.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
