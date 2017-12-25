@@ -190,7 +190,7 @@ namespace Neo.SmartContract.Debug
             System.IO.File.WriteAllText(filename + ".json", sb.ToString());
 
             var compressor = new SevenZip.SevenZipCompressor();
-            compressor.CompressionMethod = SevenZip.CompressionMethod.Lzma2;
+            compressor.CompressionMethod = SevenZip.CompressionMethod.Lzma;
             compressor.CompressionLevel = SevenZip.CompressionLevel.Fast;
             compressor.FastCompression = true;
 
