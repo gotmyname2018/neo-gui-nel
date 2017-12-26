@@ -603,7 +603,7 @@ namespace Neo.Implementations.Blockchains.LevelDB
 
                             ///add log
                             bool bLog = false;
-                            if (this.FullLogPath != null && this.FullLogSkip.Contains(itx.Hash.ToString()) == false)
+                            if (this.FullLogPath != null)// && this.FullLogSkip.Contains(itx.Hash.ToString()) == false)
                                 bLog = true;
                             if (bLog)
                                 engine.BeginDebug();
