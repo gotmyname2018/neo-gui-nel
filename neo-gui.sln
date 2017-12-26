@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "neo-gui", "neo-gui\neo-gui.csproj", "{CFC243F0-F4E3-4754-8E21-8BA17E1C1788}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -28,9 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugin_gui", "plugin_gui", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "neo-cli", "neo-cli\neo-cli.csproj", "{57E714E6-DDCF-4586-B625-3996402CDB76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plugin_whoami", "..\dapp_whoami\plugin_whoami\plugin_whoami.csproj", "{D088A250-B336-4317-BC74-389905C1E336}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "llvm", "llvm\llvm.csproj", "{80426C45-577E-484B-81FD-CC1F78130E85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "llvm", "llvm\llvm.csproj", "{80426C45-577E-484B-81FD-CC1F78130E85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,12 +91,6 @@ Global
 		{57E714E6-DDCF-4586-B625-3996402CDB76}.Deploy|Any CPU.Build.0 = Debug|Any CPU
 		{57E714E6-DDCF-4586-B625-3996402CDB76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57E714E6-DDCF-4586-B625-3996402CDB76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D088A250-B336-4317-BC74-389905C1E336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D088A250-B336-4317-BC74-389905C1E336}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D088A250-B336-4317-BC74-389905C1E336}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
-		{D088A250-B336-4317-BC74-389905C1E336}.Deploy|Any CPU.Build.0 = Debug|Any CPU
-		{D088A250-B336-4317-BC74-389905C1E336}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D088A250-B336-4317-BC74-389905C1E336}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80426C45-577E-484B-81FD-CC1F78130E85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{80426C45-577E-484B-81FD-CC1F78130E85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80426C45-577E-484B-81FD-CC1F78130E85}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU

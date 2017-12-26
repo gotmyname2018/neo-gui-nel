@@ -8,11 +8,11 @@ namespace plugin_sample
 {
     public class Plugin01 : Neo.GUIPlugin.IPlugin
     {
-        public string Name => "SamplePlugin";
+        public string Name => "Nep5 tool";
 
         public string[] GetMenus()
         {
-            return new string[] { "menu1", "menu2" };
+            return new string[] { "Nep5 tool", "menu2" };
         }
         IAPI api;
         public void Init(IAPI api)
@@ -22,9 +22,11 @@ namespace plugin_sample
 
         public void OnMenu(string menu)
         {
-            if(menu == "menu1")
+            if(menu == "Nep5 tool")
             {
-                System.Windows.Forms.MessageBox.Show("you press menu1");
+                var f1 = new Form1();
+                f1.api = this.api;
+                f1.ShowDialog();
             }
             else if(menu=="menu2")
             {
