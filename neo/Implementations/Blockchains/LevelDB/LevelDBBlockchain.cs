@@ -618,7 +618,7 @@ namespace Neo.Implementations.Blockchains.LevelDB
                             //write fulllog
                             if (bLog)
                             {
-                                string filename = System.IO.Path.Combine(this.FullLogPath, tx.Hash.ToString() + ".fulllog.7z");
+                                string filename = System.IO.Path.Combine(this.FullLogPath, tx.Hash.ToString() + ".llvmhex.txt");
                                 if (engine.FullLog != null)
                                     engine.FullLog.Save(filename);
                             }

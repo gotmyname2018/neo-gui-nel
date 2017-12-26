@@ -189,13 +189,15 @@ namespace Neo.SmartContract.Debug
             json.ConvertToStringWithFormat(sb, 0);
             System.IO.File.WriteAllText(filename + ".json", sb.ToString());
 
-            var compressor = new SevenZip.SevenZipCompressor();
-            compressor.CompressionMethod = SevenZip.CompressionMethod.Lzma;
-            compressor.CompressionLevel = SevenZip.CompressionLevel.Fast;
-            compressor.FastCompression = true;
+            var bts =llvm.QuickFile.ToBytes(filename + ".json");
+            //var compressor = new SevenZip.SevenZipCompressor();
+            //compressor.CompressionMethod = SevenZip.CompressionMethod.Lzma;
+            //compressor.CompressionLevel = SevenZip.CompressionLevel.Fast;
+            //compressor.FastCompression = true;
 
-            //compressor.path = path;
-            compressor.CompressFiles(filename, System.IO.Path.GetFullPath(filename + ".json"));
+            ////compressor.path = path;
+            //compressor.CompressFiles(filename, System.IO.Path.GetFullPath(filename + ".json"));
+            System.IO.File.WriteAllText(filename, bts.ToHexString());
             System.IO.File.Delete(filename + ".json");
 
         }

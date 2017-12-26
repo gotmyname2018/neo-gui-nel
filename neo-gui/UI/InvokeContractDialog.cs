@@ -126,7 +126,7 @@ namespace Neo.UI
             sb.AppendLine($"Gas Consumed: {engine.GasConsumed}");
             sb.AppendLine($"Evaluation Stack: {new JArray(engine.EvaluationStack.Select(p => p.ToParameter().ToJson()))}");
             textBox7.Text = sb.ToString();
-            engine.FullLog.Save(System.IO.Path.Combine(Settings.Default.Paths.FullLog, "0x00.fulllog.7z"));
+            engine.FullLog.Save(System.IO.Path.Combine(Settings.Default.Paths.FullLog, "0x00.llvmhex.txt"));
             if (!engine.State.HasFlag(VMState.FAULT))
             {
                 tx.Gas = engine.GasConsumed - Fixed8.FromDecimal(10);
