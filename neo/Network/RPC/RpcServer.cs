@@ -303,10 +303,10 @@ namespace Neo.Network.RPC
 
                         try
                         {
-                            var filename = System.IO.Path.Combine(this.pathFullLog, hash.ToString() + ".fulllog.7z");
+                            var filename = System.IO.Path.Combine(this.pathFullLog, hash.ToString() + ".llvmhex.txt");
                             if (System.IO.File.Exists(filename))
                             {
-                                var file = System.IO.File.ReadAllBytes(filename).ToHexString();
+                                var file = System.IO.File.ReadAllText(filename);
                                 JObject json = new JString(file);
                                 return json;
                             }
