@@ -56,7 +56,7 @@ namespace llvm
             var encoder = new SevenZip.Compression.LZMA.Encoder();
             encoder.SetCoderProperties(new SevenZip.CoderPropID[] { SevenZip.CoderPropID.NumFastBytes }, new object[] { (int)5 });
             encoder.WriteCoderProperties(dest);
-            byte[] buf = BitConverter.GetBytes(srcfile.Length);
+            byte[] buf = BitConverter.GetBytes(src.Length);
             dest.Write(buf, 0, 4);
             var poslen = dest.Position;
             dest.Write(buf, 0, 4);

@@ -187,9 +187,9 @@ namespace Neo.SmartContract.Debug
 
             StringBuilder sb = new StringBuilder();
             json.ConvertToStringWithFormat(sb, 0);
-            System.IO.File.WriteAllText(filename + ".json", sb.ToString());
+            System.IO.File.WriteAllText(filename, sb.ToString());
 
-            var bts =llvm.QuickFile.ToBytes(filename + ".json");
+            var bts =llvm.QuickFile.ToBytes(filename);
             //var compressor = new SevenZip.SevenZipCompressor();
             //compressor.CompressionMethod = SevenZip.CompressionMethod.Lzma;
             //compressor.CompressionLevel = SevenZip.CompressionLevel.Fast;
