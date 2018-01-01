@@ -110,6 +110,11 @@ namespace Neo.GUIPlugin
             get;
         }
     }
+    public interface IAPI2 : IAPI
+    {
+        void SendRaw(Transaction tx);
+    }
+
     public interface IPlugin
     {
         void Init(IAPI api);

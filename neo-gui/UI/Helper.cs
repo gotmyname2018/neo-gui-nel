@@ -27,7 +27,23 @@ namespace Neo.UI
             tool_forms[t].Show();
             tool_forms[t].Activate();
         }
+        public static void SendRaw(Transaction tx)
+        {
+            if (tx == null)
+            {
+                MessageBox.Show(Strings.InsufficientFunds);
+                return;
+            }
+            bool b=Program.LocalNode.Relay(tx);
 
+            if (b)
+            {
+                Program.CurrentWallet.ApplyTransaction(tx);
+                InformationBox.Show(tx.Hash.ToString(), Strings.SendTxSucceedMessage, Strings.SendTxSucceedTitle);
+                return;
+            }
+            InformationBox.Show("sendRawError");
+        }
         public static void SignAndShowInformation(Transaction tx)
         {
             if (tx == null)
@@ -49,7 +65,21 @@ namespace Neo.UI
             if (context.Completed)
             {
                 context.Verifiable.Scripts = context.GetScripts();
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    using (var br = new System.IO.BinaryWriter(ms))
+                    {
+                        //tx.SerializeUnsigned(br);
+                        IO.ISerializable s = tx;
+                        s.Serialize(br);
+                    }
+                    var hex = ms.ToArray().ToHexString();
+                    System.IO.File.WriteAllText("d:\\0x00.transhex.txt", hex);
+
+                }
+
                 Program.CurrentWallet.ApplyTransaction(tx);
+
                 Program.LocalNode.Relay(tx);
                 InformationBox.Show(tx.Hash.ToString(), Strings.SendTxSucceedMessage, Strings.SendTxSucceedTitle);
             }

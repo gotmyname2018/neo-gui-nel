@@ -233,16 +233,22 @@ namespace Neo.UI
             }
         }
 		
-        class Api : Neo.GUIPlugin.IAPI
+        class Api : Neo.GUIPlugin.IAPI2
         {
             public Network.LocalNode LocalNode => Program.LocalNode;
 
             public Wallet CurrentWallet => Program.CurrentWallet;
 
+            public void SendRaw(Transaction tx)
+            {
+                Helper.SendRaw(tx);
+            }
+
             public void SignAndShowInformation(Transaction tx)
             {
-                 Helper.SignAndShowInformation(tx);
+                Helper.SignAndShowInformation(tx);
             }
+            
         }
 
         private void MainForm_Load(object sender, EventArgs e)

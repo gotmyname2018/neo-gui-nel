@@ -12,7 +12,7 @@ namespace plugin_sample
 
         public string[] GetMenus()
         {
-            return new string[] { "Nep5 tool", "menu2" };
+            return new string[] { "Nep5 tool", "test tx" };
         }
         IAPI api;
         public void Init(IAPI api)
@@ -28,9 +28,11 @@ namespace plugin_sample
                 f1.api = this.api;
                 f1.ShowDialog();
             }
-            else if(menu=="menu2")
+            else if(menu== "test tx")
             {
-                System.Windows.Forms.MessageBox.Show("you press menu2");
+                var tt = new TestTran();
+                tt.api = this.api as IAPI2;
+                tt.ShowDialog();
 
             }
         }
