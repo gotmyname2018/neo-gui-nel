@@ -369,15 +369,16 @@ namespace plugin_sample
                     try
                     {
                         var tss = ts.GetArray();
-                        foreach (var titme in tss)
+                        for (var i = 0; i < tss.Count; i++)
                         {
+                            var titme = tss[i];
                             if (titme.IsArray)
                             {
                                 var arr = titme.GetArray();
 
-                                listBox2.Items.Add("领奖block=" + arr[0].GetBigInteger());
-                                listBox2.Items.Add("奖池总数=" + (decimal)arr[1].GetBigInteger() / (decimal)amount);
-                                listBox2.Items.Add("领奖比例=" + (decimal)arr[2].GetBigInteger() / (decimal)amount);
+                                listBox2.Items.Add(i + "领奖block=" + arr[0].GetBigInteger());
+                                listBox2.Items.Add(i + "奖池总数=" + (decimal)arr[1].GetBigInteger() / (decimal)amount);
+                                listBox2.Items.Add(i + "领奖比例=" + (decimal)arr[2].GetBigInteger() / (decimal)amount);
                             }
 
                         }
@@ -426,7 +427,7 @@ namespace plugin_sample
             {
                 var p1 = new Neo.SmartContract.ContractParameter(Neo.SmartContract.ContractParameterType.String)
                 {
-                    Value = "checkBonusAndNew"
+                    Value = "newBonus"
                 };
                 var p2 = new ContractParameter(Neo.SmartContract.ContractParameterType.Array)
                 {
@@ -445,6 +446,29 @@ namespace plugin_sample
                 }
 
             }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            var scripthash = textBox1.Text;
+
+            var fromscripthash = GetScriptHashFromAddress(label5.Text);
+            var p1 = new Neo.SmartContract.ContractParameter(Neo.SmartContract.ContractParameterType.String)
+            {
+                Value = "getBonus"
+            };
+            var p2 = new ContractParameter(Neo.SmartContract.ContractParameterType.Array)
+            {
+                Value = new ContractParameter[]
+                {
+                        new ContractParameter(Neo.SmartContract.ContractParameterType.ByteArray)
+                        {
+                            Value =fromscripthash
+                        }
+                }
+            };
+            var script = MakeAppCallScript(scripthash, p1, p2);
+            CallScript(script);
         }
     }
 }

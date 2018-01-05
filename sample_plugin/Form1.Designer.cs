@@ -51,19 +51,20 @@
             this.label7 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.listBox2 = new System.Windows.Forms.ListBox();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.textBox6 = new System.Windows.Forms.TextBox();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
+            this.listBox2 = new System.Windows.Forms.ListBox();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -87,7 +88,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(466, 21);
             this.textBox1.TabIndex = 1;
-            this.textBox1.Text = "0x1258f1e3b146fb2cf2db7c5719dbc5eb9aa3f63a";
+            this.textBox1.Text = "0x4029188919fcfc03ec48a8affed7e78d8a7924e9";
             // 
             // button1
             // 
@@ -301,6 +302,24 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "查询";
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(21, 125);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(47, 12);
+            this.label13.TabIndex = 13;
+            this.label13.Text = "label13";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(21, 104);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(47, 12);
+            this.label12.TabIndex = 12;
+            this.label12.Text = "label12";
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -337,26 +356,9 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(21, 104);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(47, 12);
-            this.label12.TabIndex = 12;
-            this.label12.Text = "label12";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(21, 125);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(47, 12);
-            this.label13.TabIndex = 13;
-            this.label13.Text = "label13";
-            // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.button9);
             this.groupBox6.Controls.Add(this.button8);
             this.groupBox6.Controls.Add(this.button7);
             this.groupBox6.Controls.Add(this.label14);
@@ -371,24 +373,25 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "NEP5.1 扩展";
             // 
-            // button6
+            // button8
             // 
-            this.button6.Location = new System.Drawing.Point(390, 20);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(105, 23);
-            this.button6.TabIndex = 11;
-            this.button6.Text = "查询基本情况";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.button8.Location = new System.Drawing.Point(390, 145);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(75, 23);
+            this.button8.TabIndex = 17;
+            this.button8.Text = "创建奖励";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
-            // listBox2
+            // button7
             // 
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.ItemHeight = 12;
-            this.listBox2.Location = new System.Drawing.Point(390, 49);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(304, 88);
-            this.listBox2.TabIndex = 12;
+            this.button7.Location = new System.Drawing.Point(188, 177);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(182, 23);
+            this.button7.TabIndex = 15;
+            this.button7.Text = "发送进池子里（管理员地址）";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // label14
             // 
@@ -407,25 +410,34 @@
             this.textBox6.TabIndex = 15;
             this.textBox6.Text = "1";
             // 
-            // button7
+            // listBox2
             // 
-            this.button7.Location = new System.Drawing.Point(222, 176);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(142, 23);
-            this.button7.TabIndex = 15;
-            this.button7.Text = "发送进池子里";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.listBox2.FormattingEnabled = true;
+            this.listBox2.ItemHeight = 12;
+            this.listBox2.Location = new System.Drawing.Point(390, 49);
+            this.listBox2.Name = "listBox2";
+            this.listBox2.Size = new System.Drawing.Size(304, 88);
+            this.listBox2.TabIndex = 12;
             // 
-            // button8
+            // button6
             // 
-            this.button8.Location = new System.Drawing.Point(390, 145);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(75, 23);
-            this.button8.TabIndex = 17;
-            this.button8.Text = "创建奖励";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
+            this.button6.Location = new System.Drawing.Point(390, 20);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(105, 23);
+            this.button6.TabIndex = 11;
+            this.button6.Text = "查询基本情况";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(390, 179);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(150, 23);
+            this.button9.TabIndex = 18;
+            this.button9.Text = "领奖（管理员地址）";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // Form1
             // 
@@ -496,5 +508,6 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button9;
     }
 }
