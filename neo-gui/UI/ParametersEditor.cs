@@ -77,7 +77,7 @@ namespace Neo.UI
                 textBox1.Text = listView1.SelectedItems[0].SubItems["value"].Text;
                 textBox2.Clear();
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 MessageBox.Show(err.Message);
             }
@@ -184,6 +184,37 @@ namespace Neo.UI
             int index = listView1.SelectedIndices[0];
             parameters.RemoveAt(index);
             listView1.Items.RemoveAt(index);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            ContractParameter parameter = new ContractParameter();
+            parameter.Type = ContractParameterType.Array;
+            var subp = new List<ContractParameter>();
+            parameter.Value = subp;
+
+            parameters.Add(parameter);
+            listView1.Items.Add(new ListViewItem(new[]
+            {
+                new ListViewItem.ListViewSubItem
+                {
+                    Name = "index",
+                    Text = $"[{listView1.Items.Count}]"
+                },
+                new ListViewItem.ListViewSubItem
+                {
+                    Name = "type",
+                    Text = parameter.Type.ToString()
+                },
+                new ListViewItem.ListViewSubItem
+                {
+                    Name = "value",
+                    Text = parameter.ToString()
+                }
+            }, -1)
+            {
+                Tag = parameter
+            });
         }
     }
 }
