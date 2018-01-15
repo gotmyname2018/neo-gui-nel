@@ -54,7 +54,7 @@ namespace Neo.UI
                 Attributes = tx.Attributes,
                 Inputs = tx.Inputs,
                 Outputs = tx.Outputs
-            }, change_address, fee);
+            }, null, change_address, fee);
         }
 
         private void UpdateScript()

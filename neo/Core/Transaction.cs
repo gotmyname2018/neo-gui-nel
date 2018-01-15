@@ -288,7 +288,7 @@ namespace Neo.Core
         {
         }
 
-        public void SerializeUnsigned(BinaryWriter writer)
+        void IVerifiable.SerializeUnsigned(BinaryWriter writer)
         {
             writer.Write((byte)Type);
             writer.Write(Version);
