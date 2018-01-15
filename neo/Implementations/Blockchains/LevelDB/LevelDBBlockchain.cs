@@ -32,21 +32,18 @@ namespace Neo.Implementations.Blockchains.LevelDB
         public override uint Height => current_block_height;
         public bool VerifyBlocks { get; set; } = true;
         public string FullLogPath;
-        public List<string> FullLogSkip;
-        public LevelDBBlockchain(string path, string fulllogpath = null)
+        public int fulllog_splitcount;
+        public int fulllog_splitindex;
+        public LevelDBBlockchain(string path, string fulllogpath = null, int _fulllog_splitcount = 1, int _fulllog_splitindex = 0)
         {
             this.FullLogPath = fulllogpath;
-            if (this.FullLogPath != null)
-            {
-                var runpath = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location);
-                var skipfile = System.IO.Path.Combine(runpath, "skiplogtran.txt");
-                var lines = System.IO.File.ReadLines(skipfile);
-                FullLogSkip = new List<string>(lines);
-            }
+            this.fulllog_splitcount = _fulllog_splitcount;
+            this.fulllog_splitindex = _fulllog_splitindex;
             if (string.IsNullOrEmpty(this.FullLogPath) == false)
             {
                 if (System.IO.Directory.Exists(FullLogPath) == false)
                     System.IO.Directory.CreateDirectory(FullLogPath);
+
             }
             else
             {
@@ -577,11 +574,27 @@ namespace Neo.Implementations.Blockchains.LevelDB
                         CachedScriptTable script_table = new CachedScriptTable(contracts);
                         StateMachine service = new StateMachine(block, accounts, assets, contracts, storages);
                         ApplicationEngine engine = new ApplicationEngine(TriggerType.Application, tx_invocation, script_table, service, tx_invocation.Gas);
+                        ///add log
+                        bool bLog = false;
+                        var split = block.Header.Index % this.fulllog_splitcount;
+                        if (this.FullLogPath != null && split == this.fulllog_splitindex)// && this.FullLogSkip.Contains(itx.Hash.ToString()) == false)
+                            bLog = true;
+                        if (bLog)
+                            engine.BeginDebug();
+
                         engine.LoadScript(tx_invocation.Script, false);
                         if (engine.Execute())
                         {
                             service.Commit();
                             notifications.AddRange(service.Notifications);
+                        }
+
+                        //write fulllog
+                        if (bLog)
+                        {
+                            string filename = System.IO.Path.Combine(this.FullLogPath, tx.Hash.ToString() + ".llvmhex.txt");
+                            if (engine.FullLog != null)
+                                engine.FullLog.Save(filename);
                         }
                         break;
                 }

@@ -29,11 +29,25 @@ namespace Neo
         public string Chain { get; }
         public string Notifications { get; }
         public string Fulllogs { get; }
+        public int fulllog_splitcount { get; }
+        public int fulllog_splitindex { get; }
         public PathsSettings(IConfigurationSection section)
         {
             this.Chain = section.GetSection("Chain").Value;
             this.Notifications = section.GetSection("Notifications").Value;
             this.Fulllogs = section.GetSection("Fulllogs").Value;
+            var cvalue = section.GetSection("Fulllog_splitCount").Value;
+            var ivalue = section.GetSection("Fulllog_splitIndex").Value;
+            if (cvalue == null || ivalue == null)
+            {
+                this.fulllog_splitcount = 1;
+                this.fulllog_splitindex = 0;
+            }
+            else
+            {
+                this.fulllog_splitcount = int.Parse(cvalue);
+                this.fulllog_splitindex = int.Parse(ivalue);
+            }
         }
     }
 
