@@ -80,11 +80,11 @@ namespace Neo
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             XDocument xdoc = null;
-            try
-            {
-                xdoc = XDocument.Load("https://neo.org/client/update.xml");
-            }
-            catch { }
+            //try
+            //{
+            //    xdoc = XDocument.Load("https://neo.org/client/update.xml");
+            //}
+            //catch { }
             if (xdoc != null)
             {
                 Version version = Assembly.GetExecutingAssembly().GetName().Version;
