@@ -49,7 +49,7 @@ namespace Neo.SmartContract.Debug
             var type = item.GetType().Name;
             if (type == "InteropInterface")
             {
-                json.SetDictValue(type, item.GetInterface<VM.IInteropInterface>().GetType().Name);
+                json.SetDictValue(type, (item as VM.Types.InteropInterface).GetInterface<VM.IInteropInterface>().GetType().Name);
             }
             else if (type == "Boolean")
             {
@@ -63,11 +63,11 @@ namespace Neo.SmartContract.Debug
             {
                 json.SetDictValue(type, item.GetBigInteger().ToString());
             }
-            else if (item.IsArray || item.IsStruct)
+            else if (item is VM.Types.Array)//item is VM.Types.Struct || 是struct 一定是array
             {
                 MyJson.JsonNode_Array array = new MyJson.JsonNode_Array();
                 json.SetDictValue(type, array);
-                foreach (var i in item.GetArray())
+                foreach (var i in (item as VM.Types.Array).ToArray())
                 {
                     array.Add(StatkItemToJson(i));
                 }

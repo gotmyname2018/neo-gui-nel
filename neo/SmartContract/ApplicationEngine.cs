@@ -229,8 +229,8 @@ namespace Neo.SmartContract
                         break;
                     case OpCode.UNPACK:
                         StackItem item = EvaluationStack.Peek();
-                        if (!item.IsArray) return false;
-                        size = item.GetArray().Count;
+                        if (!(item is VM.Types.Array)) return false;
+                        size = (item as VM.Types.Array).Count;
                         break;
                 }
             if (size == 0) return true;
@@ -276,31 +276,43 @@ namespace Neo.SmartContract
                         if (!testMode && gas_consumed > gas_amount)
                         {
                             if (FullLog != null) FullLog.Error("gas_consumed > gas_amount");
-                            return false;
+                            State |= VMState.FAULT;
+							return false;
                         }
                         if (!CheckItemSize(nextOpcode))
                         {
                             if (FullLog != null) FullLog.Error("CheckItemSize");
+							State |= VMState.FAULT;
                             return false;
                         }
                         if (!CheckStackSize(nextOpcode))
                         {
                             if (FullLog != null) FullLog.Error("CheckStackSize");
+							State |= VMState.FAULT;
                             return false;
                         }
                         if (!CheckArraySize(nextOpcode))
                         {
                             if (FullLog != null) FullLog.Error("CheckArraySize");
+							State |= VMState.FAULT;
                             return false;
                         }
                         if (!CheckInvocationStack(nextOpcode))
                         {
                             if (FullLog != null) FullLog.Error("CheckInvocationStack");
+							State |= VMState.FAULT;
                             return false;
                         }
                         if (!CheckBigIntegers(nextOpcode))
                         {
                             if (FullLog != null) FullLog.Error("CheckBigIntegers");
+							State |= VMState.FAULT;
+                            return false;
+                        }
+			            if (!CheckDynamicInvoke(nextOpcode))
+                        {
+                            if (FullLog != null) FullLog.Error("CheckBigIntegers");
+							State |= VMState.FAULT;
                             return false;
                         }
                     }
@@ -328,6 +340,7 @@ namespace Neo.SmartContract
             }
             catch(Exception err)
             {
+                State |= VMState.FAULT;
                 return false;
             }
             if (FullLog != null)

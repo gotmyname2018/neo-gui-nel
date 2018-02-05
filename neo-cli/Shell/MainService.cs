@@ -140,11 +140,6 @@ namespace Neo.Shell
                 return true;
             }
             string path = args[2];
-            if (Path.GetExtension(path) == ".db3")
-            {
-                Console.WriteLine("Wallet files in db3 format are not supported, please use a .json file extension.");
-                return true;
-            }
             string password = ReadPassword("password");
             if (password.Length == 0)
             {
@@ -157,13 +152,31 @@ namespace Neo.Shell
                 Console.WriteLine("error");
                 return true;
             }
-            NEP6Wallet wallet = new NEP6Wallet(path);
-            wallet.Unlock(password);
-            WalletAccount account = wallet.CreateAccount();
-            wallet.Save();
-            Program.Wallet = wallet;
-            Console.WriteLine($"address: {account.Address}");
-            Console.WriteLine($" pubkey: {account.GetKey().PublicKey.EncodePoint(true).ToHexString()}");
+            switch (Path.GetExtension(path))
+            {
+                case ".db3":
+                    {
+                        Program.Wallet = UserWallet.Create(path, password);
+                        WalletAccount account = Program.Wallet.CreateAccount();
+                        Console.WriteLine($"address: {account.Address}");
+                        Console.WriteLine($" pubkey: {account.GetKey().PublicKey.EncodePoint(true).ToHexString()}");
+                    }
+                    break;
+                case ".json":
+                    {
+                        NEP6Wallet wallet = new NEP6Wallet(path);
+                        wallet.Unlock(password);
+                        WalletAccount account = wallet.CreateAccount();
+                        wallet.Save();
+                        Program.Wallet = wallet;
+                        Console.WriteLine($"address: {account.Address}");
+                        Console.WriteLine($" pubkey: {account.GetKey().PublicKey.EncodePoint(true).ToHexString()}");
+                    }
+                    break;
+                default:
+                    Console.WriteLine("Wallet files in that format are not supported, please use a .json or .db3 file extension.");
+                    break;
+            }
             return true;
         }
 
@@ -781,7 +794,7 @@ namespace Neo.Shell
                 //{
                     rpc = new RpcServerWithWallet(LocalNode);
                     rpc.Start(Settings.Default.RPC.Port, Settings.Default.RPC.SslCert, Settings.Default.RPC.SslCertPassword,
-                        Settings.Default.Paths.Notifications,
+                        Settings.Default.Paths.ApplicationLogs,
                         Settings.Default.Paths.Fulllogs
                         );
                 //}
@@ -792,7 +805,7 @@ namespace Neo.Shell
                 //    }
                 //}
                 //if (recordNotifications)
-                Blockchain.Notify += Blockchain_Notify;
+                    LevelDBBlockchain.ApplicationExecuted += LevelDBBlockchain_ApplicationExecuted;
             });
         }
 
@@ -875,21 +888,23 @@ namespace Neo.Shell
             return true;
         }
 
-        private void Blockchain_Notify(object sender, BlockNotifyEventArgs e)
+        private void LevelDBBlockchain_ApplicationExecuted(object sender, ApplicationExecutedEventArgs e)
         {
-            JArray jArray = new JArray(e.Notifications.Select(p =>
+            JObject json = new JObject();
+            json["txid"] = e.Transaction.Hash.ToString();
+            json["vmstate"] = e.VMState;
+            json["gas_consumed"] = e.GasConsumed.ToString();
+            json["stack"] = e.Stack.Select(p => p.ToParameter().ToJson()).ToArray();
+            json["notifications"] = e.Notifications.Select(p =>
             {
-                JObject json = new JObject();
-                json["txid"] = ((Transaction)p.ScriptContainer).Hash.ToString();
-                json["time"] = e.Block.Timestamp;
-                json["contract"] = p.ScriptHash.ToString();
-                json["state"] = p.State.ToParameter().ToJson();
-                return json;
-            }));
-            string path = Path.Combine(AppContext.BaseDirectory, Settings.Default.Paths.Notifications);
-            Directory.CreateDirectory(path);
-            path = Path.Combine(path, $"block-{e.Block.Index}.json");
-            File.WriteAllText(path, jArray.ToString());
+                JObject notification = new JObject();
+                notification["contract"] = p.ScriptHash.ToString();
+                notification["state"] = p.State.ToParameter().ToJson();
+                return notification;
+            }).ToArray();
+            Directory.CreateDirectory(Settings.Default.Paths.ApplicationLogs);
+            string path = Path.Combine(Settings.Default.Paths.ApplicationLogs, $"{e.Transaction.Hash}.json");
+            File.WriteAllText(path, json.ToString());
         }
     }
 }

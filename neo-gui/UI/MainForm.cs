@@ -477,7 +477,7 @@ namespace Neo.UI
                         if (engine.State.HasFlag(VMState.FAULT)) continue;
                         string name = engine.EvaluationStack.Pop().GetString();
                         byte decimals = (byte)engine.EvaluationStack.Pop().GetBigInteger();
-                        BigInteger amount = engine.EvaluationStack.Pop().GetArray().Aggregate(BigInteger.Zero, (x, y) => x + y.GetBigInteger());
+                        BigInteger amount = (engine.EvaluationStack.Pop() as Neo.VM.Types.Array).ToArray().Aggregate(BigInteger.Zero, (x, y) => x + y.GetBigInteger());
                         if (amount == 0)
                         {
                             listView2.Items.RemoveByKey(script_hash.ToString());
@@ -730,18 +730,11 @@ namespace Neo.UI
 
         private void 选举EToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            InvocationTransaction tx;
             using (ElectionDialog dialog = new ElectionDialog())
             {
                 if (dialog.ShowDialog() != DialogResult.OK) return;
-                tx = dialog.GetTransaction();
+                Helper.SignAndShowInformation(dialog.GetTransaction());
             }
-            using (InvokeContractDialog dialog = new InvokeContractDialog(tx))
-            {
-                if (dialog.ShowDialog() != DialogResult.OK) return;
-                tx = dialog.GetTransaction();
-            }
-            Helper.SignAndShowInformation(tx);
         }
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -932,19 +925,12 @@ namespace Neo.UI
 
         private void voteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            InvocationTransaction tx;
             WalletAccount account = (WalletAccount)listView1.SelectedItems[0].Tag;
             using (VotingDialog dialog = new VotingDialog(account.ScriptHash))
             {
                 if (dialog.ShowDialog() != DialogResult.OK) return;
-                tx = dialog.GetTransaction();
+                Helper.SignAndShowInformation(dialog.GetTransaction());
             }
-            using (InvokeContractDialog dialog = new InvokeContractDialog(tx))
-            {
-                if (dialog.ShowDialog() != DialogResult.OK) return;
-                tx = dialog.GetTransaction();
-            }
-            Helper.SignAndShowInformation(tx);
         }
 
         private void 复制到剪贴板CToolStripMenuItem_Click(object sender, EventArgs e)
@@ -969,6 +955,7 @@ namespace Neo.UI
             if (Program.CurrentWallet is NEP6Wallet wallet)
                 wallet.Save();
             balance_changed = true;
+            check_nep5_balance = true;
         }
 
         private void contextMenuStrip2_Opening(object sender, CancelEventArgs e)

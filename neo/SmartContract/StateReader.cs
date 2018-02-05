@@ -291,7 +291,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Header_GetIndex(ExecutionEngine engine)
         {
-            BlockBase header = engine.EvaluationStack.Pop().GetInterface<BlockBase>();
+            BlockBase header = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<BlockBase>();
             if (header == null) return false;
             engine.EvaluationStack.Push(header.Index);
             return true;
@@ -299,7 +299,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Header_GetHash(ExecutionEngine engine)
         {
-            BlockBase header = engine.EvaluationStack.Pop().GetInterface<BlockBase>();
+            BlockBase header = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<BlockBase>();
             if (header == null) return false;
             engine.EvaluationStack.Push(header.Hash.ToArray());
             return true;
@@ -307,7 +307,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Header_GetVersion(ExecutionEngine engine)
         {
-            BlockBase header = engine.EvaluationStack.Pop().GetInterface<BlockBase>();
+            BlockBase header = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<BlockBase>();
             if (header == null) return false;
             engine.EvaluationStack.Push(header.Version);
             return true;
@@ -315,7 +315,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Header_GetPrevHash(ExecutionEngine engine)
         {
-            BlockBase header = engine.EvaluationStack.Pop().GetInterface<BlockBase>();
+            BlockBase header = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<BlockBase>();
             if (header == null) return false;
             engine.EvaluationStack.Push(header.PrevHash.ToArray());
             return true;
@@ -323,7 +323,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Header_GetMerkleRoot(ExecutionEngine engine)
         {
-            BlockBase header = engine.EvaluationStack.Pop().GetInterface<BlockBase>();
+            BlockBase header = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<BlockBase>();
             if (header == null) return false;
             engine.EvaluationStack.Push(header.MerkleRoot.ToArray());
             return true;
@@ -331,7 +331,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Header_GetTimestamp(ExecutionEngine engine)
         {
-            BlockBase header = engine.EvaluationStack.Pop().GetInterface<BlockBase>();
+            BlockBase header = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<BlockBase>();
             if (header == null) return false;
             engine.EvaluationStack.Push(header.Timestamp);
             return true;
@@ -339,7 +339,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Header_GetConsensusData(ExecutionEngine engine)
         {
-            BlockBase header = engine.EvaluationStack.Pop().GetInterface<BlockBase>();
+            BlockBase header = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<BlockBase>();
             if (header == null) return false;
             engine.EvaluationStack.Push(header.ConsensusData);
             return true;
@@ -347,7 +347,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Header_GetNextConsensus(ExecutionEngine engine)
         {
-            BlockBase header = engine.EvaluationStack.Pop().GetInterface<BlockBase>();
+            BlockBase header = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<BlockBase>();
             if (header == null) return false;
             engine.EvaluationStack.Push(header.NextConsensus.ToArray());
             return true;
@@ -355,7 +355,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Block_GetTransactionCount(ExecutionEngine engine)
         {
-            Block block = engine.EvaluationStack.Pop().GetInterface<Block>();
+            Block block = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<Block>();
             if (block == null) return false;
             engine.EvaluationStack.Push(block.Transactions.Length);
             return true;
@@ -363,7 +363,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Block_GetTransactions(ExecutionEngine engine)
         {
-            Block block = engine.EvaluationStack.Pop().GetInterface<Block>();
+            Block block = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<Block>();
             if (block == null) return false;
             engine.EvaluationStack.Push(block.Transactions.Select(p => StackItem.FromInterface(p)).ToArray());
             return true;
@@ -371,7 +371,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Block_GetTransaction(ExecutionEngine engine)
         {
-            Block block = engine.EvaluationStack.Pop().GetInterface<Block>();
+            Block block = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<Block>();
             int index = (int)engine.EvaluationStack.Pop().GetBigInteger();
             if (block == null) return false;
             if (index < 0 || index >= block.Transactions.Length) return false;
@@ -382,7 +382,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Transaction_GetHash(ExecutionEngine engine)
         {
-            Transaction tx = engine.EvaluationStack.Pop().GetInterface<Transaction>();
+            Transaction tx = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<Transaction>();
             if (tx == null) return false;
             engine.EvaluationStack.Push(tx.Hash.ToArray());
             return true;
@@ -390,7 +390,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Transaction_GetType(ExecutionEngine engine)
         {
-            Transaction tx = engine.EvaluationStack.Pop().GetInterface<Transaction>();
+            Transaction tx = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<Transaction>();
             if (tx == null) return false;
             engine.EvaluationStack.Push((int)tx.Type);
             return true;
@@ -398,7 +398,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Transaction_GetAttributes(ExecutionEngine engine)
         {
-            Transaction tx = engine.EvaluationStack.Pop().GetInterface<Transaction>();
+            Transaction tx = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<Transaction>();
             if (tx == null) return false;
             engine.EvaluationStack.Push(tx.Attributes.Select(p => StackItem.FromInterface(p)).ToArray());
             return true;
@@ -406,7 +406,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Transaction_GetInputs(ExecutionEngine engine)
         {
-            Transaction tx = engine.EvaluationStack.Pop().GetInterface<Transaction>();
+            Transaction tx = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<Transaction>();
             if (tx == null) return false;
             engine.EvaluationStack.Push(tx.Inputs.Select(p => StackItem.FromInterface(p)).ToArray());
             return true;
@@ -414,7 +414,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Transaction_GetOutputs(ExecutionEngine engine)
         {
-            Transaction tx = engine.EvaluationStack.Pop().GetInterface<Transaction>();
+            Transaction tx = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<Transaction>();
             if (tx == null) return false;
             engine.EvaluationStack.Push(tx.Outputs.Select(p => StackItem.FromInterface(p)).ToArray());
             return true;
@@ -422,7 +422,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Transaction_GetReferences(ExecutionEngine engine)
         {
-            Transaction tx = engine.EvaluationStack.Pop().GetInterface<Transaction>();
+            Transaction tx = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<Transaction>();
             if (tx == null) return false;
             engine.EvaluationStack.Push(tx.Inputs.Select(p => StackItem.FromInterface(tx.References[p])).ToArray());
             return true;
@@ -430,7 +430,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Transaction_GetUnspentCoins(ExecutionEngine engine)
         {
-            Transaction tx = engine.EvaluationStack.Pop().GetInterface<Transaction>();
+            Transaction tx = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<Transaction>();
             if (tx == null) return false;
             engine.EvaluationStack.Push(Blockchain.Default.GetUnspent(tx.Hash).Select(p => StackItem.FromInterface(p)).ToArray());
             return true;
@@ -438,7 +438,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Attribute_GetUsage(ExecutionEngine engine)
         {
-            TransactionAttribute attr = engine.EvaluationStack.Pop().GetInterface<TransactionAttribute>();
+            TransactionAttribute attr = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<TransactionAttribute>();
             if (attr == null) return false;
             engine.EvaluationStack.Push((int)attr.Usage);
             return true;
@@ -446,7 +446,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Attribute_GetData(ExecutionEngine engine)
         {
-            TransactionAttribute attr = engine.EvaluationStack.Pop().GetInterface<TransactionAttribute>();
+            TransactionAttribute attr = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<TransactionAttribute>();
             if (attr == null) return false;
             engine.EvaluationStack.Push(attr.Data);
             return true;
@@ -454,7 +454,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Input_GetHash(ExecutionEngine engine)
         {
-            CoinReference input = engine.EvaluationStack.Pop().GetInterface<CoinReference>();
+            CoinReference input = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<CoinReference>();
             if (input == null) return false;
             engine.EvaluationStack.Push(input.PrevHash.ToArray());
             return true;
@@ -462,7 +462,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Input_GetIndex(ExecutionEngine engine)
         {
-            CoinReference input = engine.EvaluationStack.Pop().GetInterface<CoinReference>();
+            CoinReference input = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<CoinReference>();
             if (input == null) return false;
             engine.EvaluationStack.Push((int)input.PrevIndex);
             return true;
@@ -470,7 +470,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Output_GetAssetId(ExecutionEngine engine)
         {
-            TransactionOutput output = engine.EvaluationStack.Pop().GetInterface<TransactionOutput>();
+            TransactionOutput output = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<TransactionOutput>();
             if (output == null) return false;
             engine.EvaluationStack.Push(output.AssetId.ToArray());
             return true;
@@ -478,7 +478,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Output_GetValue(ExecutionEngine engine)
         {
-            TransactionOutput output = engine.EvaluationStack.Pop().GetInterface<TransactionOutput>();
+            TransactionOutput output = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<TransactionOutput>();
             if (output == null) return false;
             engine.EvaluationStack.Push(output.Value.GetData());
             return true;
@@ -486,7 +486,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Output_GetScriptHash(ExecutionEngine engine)
         {
-            TransactionOutput output = engine.EvaluationStack.Pop().GetInterface<TransactionOutput>();
+            TransactionOutput output = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<TransactionOutput>();
             if (output == null) return false;
             engine.EvaluationStack.Push(output.ScriptHash.ToArray());
             return true;
@@ -494,7 +494,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Account_GetScriptHash(ExecutionEngine engine)
         {
-            AccountState account = engine.EvaluationStack.Pop().GetInterface<AccountState>();
+            AccountState account = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AccountState>();
             if (account == null) return false;
             engine.EvaluationStack.Push(account.ScriptHash.ToArray());
             return true;
@@ -502,7 +502,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Account_GetVotes(ExecutionEngine engine)
         {
-            AccountState account = engine.EvaluationStack.Pop().GetInterface<AccountState>();
+            AccountState account = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AccountState>();
             if (account == null) return false;
             engine.EvaluationStack.Push(account.Votes.Select(p => (StackItem)p.EncodePoint(true)).ToArray());
             return true;
@@ -510,7 +510,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Account_GetBalance(ExecutionEngine engine)
         {
-            AccountState account = engine.EvaluationStack.Pop().GetInterface<AccountState>();
+            AccountState account = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AccountState>();
             UInt256 asset_id = new UInt256(engine.EvaluationStack.Pop().GetByteArray());
             if (account == null) return false;
             Fixed8 balance = account.Balances.TryGetValue(asset_id, out Fixed8 value) ? value : Fixed8.Zero;
@@ -520,7 +520,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Asset_GetAssetId(ExecutionEngine engine)
         {
-            AssetState asset = engine.EvaluationStack.Pop().GetInterface<AssetState>();
+            AssetState asset = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AssetState>();
             if (asset == null) return false;
             engine.EvaluationStack.Push(asset.AssetId.ToArray());
             return true;
@@ -528,7 +528,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Asset_GetAssetType(ExecutionEngine engine)
         {
-            AssetState asset = engine.EvaluationStack.Pop().GetInterface<AssetState>();
+            AssetState asset = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AssetState>();
             if (asset == null) return false;
             engine.EvaluationStack.Push((int)asset.AssetType);
             return true;
@@ -536,7 +536,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Asset_GetAmount(ExecutionEngine engine)
         {
-            AssetState asset = engine.EvaluationStack.Pop().GetInterface<AssetState>();
+            AssetState asset = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AssetState>();
             if (asset == null) return false;
             engine.EvaluationStack.Push(asset.Amount.GetData());
             return true;
@@ -544,7 +544,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Asset_GetAvailable(ExecutionEngine engine)
         {
-            AssetState asset = engine.EvaluationStack.Pop().GetInterface<AssetState>();
+            AssetState asset = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AssetState>();
             if (asset == null) return false;
             engine.EvaluationStack.Push(asset.Available.GetData());
             return true;
@@ -552,7 +552,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Asset_GetPrecision(ExecutionEngine engine)
         {
-            AssetState asset = engine.EvaluationStack.Pop().GetInterface<AssetState>();
+            AssetState asset = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AssetState>();
             if (asset == null) return false;
             engine.EvaluationStack.Push((int)asset.Precision);
             return true;
@@ -560,7 +560,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Asset_GetOwner(ExecutionEngine engine)
         {
-            AssetState asset = engine.EvaluationStack.Pop().GetInterface<AssetState>();
+            AssetState asset = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AssetState>();
             if (asset == null) return false;
             engine.EvaluationStack.Push(asset.Owner.EncodePoint(true));
             return true;
@@ -568,7 +568,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Asset_GetAdmin(ExecutionEngine engine)
         {
-            AssetState asset = engine.EvaluationStack.Pop().GetInterface<AssetState>();
+            AssetState asset = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AssetState>();
             if (asset == null) return false;
             engine.EvaluationStack.Push(asset.Admin.ToArray());
             return true;
@@ -576,7 +576,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Asset_GetIssuer(ExecutionEngine engine)
         {
-            AssetState asset = engine.EvaluationStack.Pop().GetInterface<AssetState>();
+            AssetState asset = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<AssetState>();
             if (asset == null) return false;
             engine.EvaluationStack.Push(asset.Issuer.ToArray());
             return true;
@@ -584,7 +584,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Contract_GetScript(ExecutionEngine engine)
         {
-            ContractState contract = engine.EvaluationStack.Pop().GetInterface<ContractState>();
+            ContractState contract = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<ContractState>();
             if (contract == null) return false;
             engine.EvaluationStack.Push(contract.Script);
             return true;
@@ -601,7 +601,7 @@ namespace Neo.SmartContract
 
         protected virtual bool Storage_Get(ExecutionEngine engine)
         {
-            StorageContext context = engine.EvaluationStack.Pop().GetInterface<StorageContext>();
+            StorageContext context = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<StorageContext>();
             ContractState contract = Blockchain.Default.GetContract(context.ScriptHash);
             if (contract == null) return false;
             if (!contract.HasStorage) return false;

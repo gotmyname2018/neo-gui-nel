@@ -31,10 +31,10 @@ namespace plugin_nns
             dt.Columns.Add("value", typeof(string));
             dt.Columns.Add("time", typeof(DateTime));
 
-            Blockchain.Notify += NCNotify;
+            Neo.Implementations.Blockchains.LevelDB.LevelDBBlockchain.ApplicationExecuted += NCNotify;
         }
 
-        private void NCNotify(object sender, BlockNotifyEventArgs e)
+        private void NCNotify(object sender, ApplicationExecutedEventArgs e)
         {
             var a = e.Notifications[0].ScriptHash;
             var b = UInt160.Parse(NnsResolverAddrScripthash);
@@ -44,15 +44,15 @@ namespace plugin_nns
             //r[1] = b;
             //dt.Rows.Add(r);
 
-            if ((a==b) || (a==c))
+            if ((a == b) || (a == c))
             {
                 var e2 = e.Notifications;
                 foreach (NotifyEventArgs notify in e2)
                 {
                     string scripthash = notify.ScriptHash.ToString();
                     StackItem s = notify.State;
-                    string key = s.GetArray()[0].GetString();
-                    string value = s.GetArray()[1].GetByteArray().ToHexString();
+                    string key = (s as Neo.VM.Types.Array)[0].GetString();
+                    string value = (s as Neo.VM.Types.Array)[1].GetByteArray().ToHexString();
 
                     var r = dt.NewRow();
                     r[0] = scripthash;
@@ -294,7 +294,7 @@ namespace plugin_nns
         private void butAlter_Click(object sender, EventArgs e)
         {
             string[] nnsS = splitNNS(txtName.Text);
-            ExeContract(getAlterParas(nnsS[0], nnsS[1], nnsS[2],txtAddr.Text));
+            ExeContract(getAlterParas(nnsS[0], nnsS[1], nnsS[2], txtAddr.Text));
         }
 
         private void butDelete_Click(object sender, EventArgs e)
@@ -306,7 +306,7 @@ namespace plugin_nns
         private void timerFresh_Tick(object sender, EventArgs e)
         {
             dgvNotify.DataSource = dt;
-            dgvNotify.Sort(dgvNotify.Columns[3],System.ComponentModel.ListSortDirection.Ascending);
+            dgvNotify.Sort(dgvNotify.Columns[3], System.ComponentModel.ListSortDirection.Ascending);
             dgvNotify.Refresh();
         }
 

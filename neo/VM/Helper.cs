@@ -176,7 +176,7 @@ namespace Neo.VM
                     return new ContractParameter
                     {
                         Type = ContractParameterType.Array,
-                        Value = item.GetArray().Select(p => p.ToParameter()).ToArray()
+                        Value = (item as VM.Types.Array).Select(p => p.ToParameter()).ToArray()
                     };
                 case "Boolean":
                     return new ContractParameter

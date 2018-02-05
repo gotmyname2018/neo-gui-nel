@@ -148,7 +148,7 @@ namespace Neo.SmartContract
 
         private bool Asset_Renew(ExecutionEngine engine)
         {
-            AssetState asset = engine.EvaluationStack.Pop().GetInterface<AssetState>();
+            AssetState asset = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface) .GetInterface<AssetState>();
             if (asset == null) return false;
             byte years = (byte)engine.EvaluationStack.Pop().GetBigInteger();
             asset = assets.GetAndChange(asset.AssetId);
@@ -264,7 +264,7 @@ namespace Neo.SmartContract
 
         private bool Contract_GetStorageContext(ExecutionEngine engine)
         {
-            ContractState contract = engine.EvaluationStack.Pop().GetInterface<ContractState>();
+            ContractState contract = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<ContractState>();
             if (!contracts_created.TryGetValue(contract.ScriptHash, out UInt160 created)) return false;
             if (!created.Equals(new UInt160(engine.CurrentContext.ScriptHash))) return false;
             engine.EvaluationStack.Push(StackItem.FromInterface(new StorageContext
@@ -288,7 +288,7 @@ namespace Neo.SmartContract
 
         protected override bool Storage_Get(ExecutionEngine engine)
         {
-            StorageContext context = engine.EvaluationStack.Pop().GetInterface<StorageContext>();
+            StorageContext context = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<StorageContext>();
             if (!CheckStorageContext(context)) return false;
             byte[] key = engine.EvaluationStack.Pop().GetByteArray();
             StorageItem item = storages.TryGet(new StorageKey
@@ -302,7 +302,7 @@ namespace Neo.SmartContract
 
         private bool Storage_Put(ExecutionEngine engine)
         {
-            StorageContext context = engine.EvaluationStack.Pop().GetInterface<StorageContext>();
+            StorageContext context = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<StorageContext>();
             if (!CheckStorageContext(context)) return false;
             byte[] key = engine.EvaluationStack.Pop().GetByteArray();
             if (key.Length > 1024) return false;
@@ -317,7 +317,7 @@ namespace Neo.SmartContract
 
         private bool Storage_Delete(ExecutionEngine engine)
         {
-            StorageContext context = engine.EvaluationStack.Pop().GetInterface<StorageContext>();
+            StorageContext context = (engine.EvaluationStack.Pop() as VM.Types.InteropInterface).GetInterface<StorageContext>();
             if (!CheckStorageContext(context)) return false;
             byte[] key = engine.EvaluationStack.Pop().GetByteArray();
             storages.Delete(new StorageKey

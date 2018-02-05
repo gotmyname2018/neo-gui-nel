@@ -5,6 +5,7 @@ using Neo.IO.Json;
 using Neo.SmartContract;
 using Neo.Wallets;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Neo.Network.RPC
@@ -20,6 +21,14 @@ namespace Neo.Network.RPC
         {
             switch (method)
             {
+                case "getapplicationlog":
+                    {
+                        UInt256 hash = UInt256.Parse(_params[0].AsString());
+                        string path = Path.Combine(Settings.Default.Paths.ApplicationLogs, $"{hash}.json");
+                        return File.Exists(path)
+                            ? JObject.Parse(File.ReadAllText(path))
+                            : throw new RpcException(-100, "Unknown transaction");
+                    }
                 case "getbalance":
                     if (Program.Wallet == null)
                         throw new RpcException(-400, "Access denied.");
@@ -32,6 +41,19 @@ namespace Neo.Network.RPC
                         json["confirmed"] = coins.Where(p => p.State.HasFlag(CoinState.Confirmed)).Sum(p => p.Output.Value).ToString();
                         return json;
                     }
+                case "listaddress":
+                    if (Program.Wallet == null)
+                        throw new RpcException(-400, "Access denied.");
+                    else
+                        return Program.Wallet.GetAccounts().Select(p =>
+                        {
+                            JObject account = new JObject();
+                            account["address"] = p.Address;
+                            account["haskey"] = p.HasKey;
+                            account["label"] = p.Label;
+                            account["watchonly"] = p.WatchOnly;
+                            return account;
+                        }).ToArray();
                 case "sendfrom":
                     if (Program.Wallet == null)
                         throw new RpcException(-400, "Access denied");

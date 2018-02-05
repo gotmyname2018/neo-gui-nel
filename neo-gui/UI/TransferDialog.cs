@@ -63,7 +63,7 @@ namespace Neo.UI
                         }
                         ApplicationEngine engine = ApplicationEngine.Run(script);
                         if (engine.State.HasFlag(VMState.FAULT)) return null;
-                        var balances = engine.EvaluationStack.Pop().GetArray().Reverse().Zip(addresses, (i, a) => new
+                        var balances = (engine.EvaluationStack.Pop() as Neo.VM.Types.Array).ToArray().Reverse().Zip(addresses, (i, a) => new
                         {
                             Account = a,
                             Value = i.GetBigInteger()
@@ -117,7 +117,7 @@ namespace Neo.UI
             tx.Attributes = attributes.ToArray();
             tx.Outputs = txOutListBox1.Items.Where(p => p.AssetId is UInt256).Select(p => p.ToTxOutput()).ToArray();
             if (tx is ContractTransaction ctx)
-                tx = Program.CurrentWallet.MakeTransaction(ctx, null, ChangeAddress, Fee);
+                tx = Program.CurrentWallet.MakeTransaction(ctx, change_address: ChangeAddress, fee: Fee);
             return tx;
         }
 

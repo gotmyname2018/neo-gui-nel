@@ -104,7 +104,7 @@ namespace Neo.Wallets
                 }
                 ApplicationEngine engine = ApplicationEngine.Run(script);
                 byte decimals = (byte)engine.EvaluationStack.Pop().GetBigInteger();
-                BigInteger amount = engine.EvaluationStack.Pop().GetArray().Aggregate(BigInteger.Zero, (x, y) => x + y.GetBigInteger());
+                BigInteger amount = (engine.EvaluationStack.Pop() as VM.Types.Array).Aggregate(BigInteger.Zero, (x, y) => x + y.GetBigInteger());
                 return new BigDecimal(amount, decimals);
             }
             else
@@ -304,7 +304,7 @@ namespace Neo.Wallets
                         }
                         ApplicationEngine engine = ApplicationEngine.Run(script);
                         if (engine.State.HasFlag(VMState.FAULT)) return null;
-                        var balances = engine.EvaluationStack.Pop().GetArray().Reverse().Zip(accounts, (i, a) => new
+                        var balances = (engine.EvaluationStack.Pop() as VM.Types.Array).ToArray().Reverse().Zip(accounts, (i, a) => new
                         {
                             Account = a,
                             Value = i.GetBigInteger()

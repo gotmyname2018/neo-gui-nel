@@ -315,7 +315,7 @@ namespace plugin_sample
                 };
                 var script = MakeAppCallScript(scripthash, p1, p2);
                 var ts = TestCallScript(script);
-                var tss = ts.GetArray();
+                var tss = ts as Neo.VM.Types.Array;
                 var cash = (decimal)tss[0].GetBigInteger() / (decimal)amount;
                 var saving = tss[1].GetBigInteger();
                 var savingblock = tss[2].GetBigInteger();
@@ -368,13 +368,13 @@ namespace plugin_sample
                 {
                     try
                     {
-                        var tss = ts.GetArray();
+                        var tss = ts as Neo.VM.Types.Array;
                         for (var i = 0; i < tss.Count; i++)
                         {
                             var titme = tss[i];
-                            if (titme.IsArray)
+                            if (titme is  Neo.VM.Types.Array)
                             {
-                                var arr = titme.GetArray();
+                                var arr = titme as Neo.VM.Types.Array;
 
                                 listBox2.Items.Add(i + "领奖block=" + arr[0].GetBigInteger());
                                 listBox2.Items.Add(i + "奖池总数=" + (decimal)arr[1].GetBigInteger() / (decimal)amount);

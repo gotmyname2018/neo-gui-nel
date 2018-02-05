@@ -32,15 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Neo">
-      <HintPath>..\neo\bin\Debug\net47\Neo.dll</HintPath>
-    </Reference>
-    <Reference Include="neo-gui_pluginframework">
-      <HintPath>..\neo-gui_pluginframework\bin\Debug\neo-gui_pluginframework.dll</HintPath>
-    </Reference>
-    <Reference Include="Neo.VM">
-      <HintPath>..\neo-vm\bin\Debug\net47\Neo.VM.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -81,6 +72,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\neo-gui_pluginframework\neo-gui_pluginframework.csproj">
+      <Project>{f3166edf-72d3-4301-947f-f66c211ac2fb}</Project>
+      <Name>neo-gui_pluginframework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\neo-vm\neo-vm.csproj">
+      <Project>{779622d1-c4dc-4b7c-ba3c-0f08cba07b07}</Project>
+      <Name>neo-vm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\neo\neo.csproj">
+      <Project>{6c7a8a35-58ba-45be-a0d6-8f220b3ff2df}</Project>
+      <Name>neo</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
