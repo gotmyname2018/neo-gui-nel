@@ -59,9 +59,6 @@ namespace Neo.GUIPlugin
         }
         public void InitMenu(System.Windows.Forms.ToolStripMenuItem rootmenu)
         {
-            System.Windows.Forms.ToolStripMenuItem item = new System.Windows.Forms.ToolStripMenuItem();
-            item.Text = "good";
-            rootmenu.DropDownItems.Add(item);
             foreach (var plugin in plugins)
             {
                 try

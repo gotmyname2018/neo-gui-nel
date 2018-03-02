@@ -1,22 +1,24 @@
 ﻿{
   "ApplicationConfiguration": {
     "Paths": {
-      "Chain": "D:\\Neo\\ChainTestNet",
-      "FullLog": "d:\\Neo\\FullLogs",
-      "CertCache": "Certs"
+      "Chain": "ChainDockerPrivateNet1",
+      "Notifications": "Notifications"
     },
     "P2P": {
       "Port": 20333,
-      "WsPort": 20334
+      "WsPort": 10333
     },
-    
-    "UriPrefix": [ "http://*:20332" ],
+    "RPC": {
+      "Port": 30333,
+      "SslCert": "",
+      "SslCertPassword": ""
+    },
+    "DataDirectoryPath": "ChainDockerPrivateNet2",
+    "CertCachePath": "Certs",
+    "NodePort": 20333,
+    "WsPort": 20334,
+    "UriPrefix": [ "https://localhost:20332" ],
     "SslCert": "",
-    "SslCertPassword": "",
-    "Urls": {
-      "AddressUrl": "https://neoscan-testnet.io/address/{0}",
-      "AssetUrl": "https://neoscan-testnet.io/asset/{0}",
-      "TransactionUrl": "https://neoscan-testnet.io/transaction/{0}"
-    }
+    "SslCertPassword": ""
   }
 }
