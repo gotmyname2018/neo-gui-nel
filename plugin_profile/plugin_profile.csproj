@@ -45,13 +45,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="plugin_profile.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProfileForm.cs">
+    <Compile Include="ManualVerifyForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProfileForm.Designer.cs">
-      <DependentUpon>ProfileForm.cs</DependentUpon>
+    <Compile Include="ManualVerifyForm.Designer.cs">
+      <DependentUpon>ManualVerifyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="plugin_profile.cs" />
+    <Compile Include="ProfileSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProfileSettingsForm.Designer.cs">
+      <DependentUpon>ProfileSettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MyProfileForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MyProfileForm.Designer.cs">
+      <DependentUpon>MyProfileForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QueryAccountForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QueryAccountForm.Designer.cs">
+      <DependentUpon>QueryAccountForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -69,8 +87,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ProfileForm.resx">
-      <DependentUpon>ProfileForm.cs</DependentUpon>
+    <EmbeddedResource Include="ManualVerifyForm.resx">
+      <DependentUpon>ManualVerifyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MyProfileForm.resx">
+      <DependentUpon>MyProfileForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProfileSettingsForm.resx">
+      <DependentUpon>ProfileSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="QueryAccountForm.resx">
+      <DependentUpon>QueryAccountForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

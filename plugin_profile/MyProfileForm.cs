@@ -5,12 +5,12 @@ using System.Windows.Forms;
 
 namespace plugin_profile
 {
-    public partial class ProfileForm : Form
+    public partial class MyProfileForm : Form
     {
         private bool editing = false;
         private string savedProfile;
 
-        public ProfileForm()
+        public MyProfileForm()
         {
             InitializeComponent();
         }
