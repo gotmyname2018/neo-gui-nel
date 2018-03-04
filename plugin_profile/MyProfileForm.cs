@@ -50,7 +50,7 @@ namespace plugin_profile
                         MessageBox.Show("The email address is missing in the profile", "Error!");
                         return;
                     }
-                    ProfileContractHelper.Register(j.ToString(), GetCurrentAccountPublicKey());
+                    ProfileContractHelper.Register(j.ToString(), comboBoxAccounts.Text);
                 }
                 catch (Exception)
                 {
@@ -94,8 +94,8 @@ namespace plugin_profile
 
         private void RefreshCurrentAccountProfile()
         {
-            byte[] pubkey = GetCurrentAccountPublicKey();
-            JObject j = ProfileContractHelper.QueryByKey(pubkey);
+            string owner = comboBoxAccounts.Text;
+            JObject j = ProfileContractHelper.QueryByAccount(owner);
             string profile = j.ToString();
             string email = j["email"].AsString();
             bool verified = false;
@@ -110,7 +110,7 @@ namespace plugin_profile
             linkLabelVerifyLink.Visible = !verified && email != "";
             if (linkLabelVerifyLink.Visible)
             {
-                emailVerifyParams = "email=" + email + "&owner=" + pubkey.ToHexString();
+                emailVerifyParams = "email=" + email + "&owner=" + owner;
             }
         }
         private void comboBoxAccounts_SelectedIndexChanged(object sender, EventArgs e)
@@ -120,7 +120,6 @@ namespace plugin_profile
 
         private void linkLabelVerifyLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            byte[] pubkey = GetCurrentAccountPublicKey();
             string url = emailVerifyUrl + "?" + emailVerifyParams;
             System.Diagnostics.Process.Start(url);
         }

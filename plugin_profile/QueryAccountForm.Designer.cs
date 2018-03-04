@@ -90,7 +90,6 @@
             // 
             // buttonQuery
             // 
-            this.buttonQuery.Enabled = false;
             this.buttonQuery.Location = new System.Drawing.Point(555, 401);
             this.buttonQuery.Name = "buttonQuery";
             this.buttonQuery.Size = new System.Drawing.Size(100, 29);

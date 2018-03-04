@@ -2,6 +2,7 @@
 using Neo.SmartContract;
 using Neo.IO.Json;
 using System;
+using Neo.Wallets;
 
 namespace plugin_profile
 {
@@ -48,18 +49,20 @@ namespace plugin_profile
             return ParseProfile(result);
         }
 
-        public static JObject QueryByKey(byte[] owner)
+        public static JObject QueryByAccount(string owner)
         {
             UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
-            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "queryByKey", owner);
+            byte[] ownerScriptHash = Wallet.ToScriptHash(owner).ToArray();
+            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "queryByAccount", ownerScriptHash);
             string result = System.Text.Encoding.UTF8.GetString(engine.EvaluationStack.Peek().GetByteArray());
             return ParseProfile(result);
         }
 
-        public static bool Register(string profile, byte[] owner)
+        public static bool Register(string profile, string owner)
         {
             UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
-            return SmartContractHelper.Exec(plugin_profile.api.CurrentWallet, plugin_profile.api.LocalNode, scriptHash, "register", profile, owner);
+            byte[] ownerScriptHash = Wallet.ToScriptHash(owner).ToArray();
+            return SmartContractHelper.Exec(plugin_profile.api.CurrentWallet, plugin_profile.api.LocalNode, scriptHash, "register", profile, ownerScriptHash);
         }
     }
 }

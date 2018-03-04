@@ -12,7 +12,7 @@ namespace plugin_profile
         public static IAPI api;
         public string Name => "Account profile";
 
-        private static readonly string DEFAULT_CONTRACT_SCRIPT_HASH = "0xcc04726d14cd0af9fdfd6c3d47e53e81c66bbd40";
+        private static readonly string DEFAULT_CONTRACT_SCRIPT_HASH = "0xcbb1db61316bd4aa00b203bb537c948e285b3b83";
         public static string ContractScriptHash = DEFAULT_CONTRACT_SCRIPT_HASH;
 
         public void Init(IAPI api)
