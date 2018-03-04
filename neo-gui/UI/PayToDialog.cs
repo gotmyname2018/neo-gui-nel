@@ -82,8 +82,12 @@ namespace Neo.UI
             }
             catch (FormatException)
             {
-                button1.Enabled = false;
-                return;
+                int i = textBox1.Text.IndexOf("@");
+                if (i <= 0 || i == textBox1.Text.Length - 1)
+                {
+                    button1.Enabled = false;
+                    return;
+                }
             }
             if (!Fixed8.TryParse(textBox2.Text, out Fixed8 amount))
             {
@@ -101,6 +105,21 @@ namespace Neo.UI
                 return;
             }
             button1.Enabled = true;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text.Contains("@"))
+            {
+                string owner = Helper.QueryEmailAddressOwner(textBox1.Text);
+                if (owner == "")
+                {
+                    MessageBox.Show("Given email address not bind to a NEO account", "Error!");
+                    return;
+                }
+                textBox1.Text = owner;
+                this.DialogResult = DialogResult.OK;
+            }
         }
     }
 }

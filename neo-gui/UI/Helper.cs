@@ -1,6 +1,8 @@
 ﻿using Neo.Core;
 using Neo.Properties;
 using Neo.SmartContract;
+using Neo.VM;
+using Neo.Wallets;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -86,6 +88,27 @@ namespace Neo.UI
             else
             {
                 InformationBox.Show(context.ToString(), Strings.IncompletedSignatureMessage, Strings.IncompletedSignatureTitle);
+            }
+        }
+
+        public static string QueryEmailAddressOwner(string email)
+        {
+            UInt160 scriptHash = UInt160.Parse("0xff9e21bf9d3bf84bb96be6d42ad0102af24e9289");
+            byte[] script;
+            using (ScriptBuilder sb = new ScriptBuilder())
+            {
+                script = sb.EmitAppCall(scriptHash, "queryOwner", email).ToArray();
+            }
+            ApplicationEngine engine = ApplicationEngine.Run(script);
+            byte[] owner = engine.EvaluationStack.Peek().GetByteArray();
+            try
+            {
+                UInt160 ownerScriptHash = new UInt160(owner);
+                return Wallet.ToAddress(ownerScriptHash);
+            }
+            catch (Exception)
+            {
+                return "";
             }
         }
     }

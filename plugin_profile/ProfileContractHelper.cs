@@ -62,8 +62,16 @@ namespace plugin_profile
         {
             UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
             ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "queryOwner", email);
-            UInt160 ownerScriptHash = new UInt160(engine.EvaluationStack.Peek().GetByteArray());
-            return Wallet.ToAddress(ownerScriptHash);
+            byte[] owner = engine.EvaluationStack.Peek().GetByteArray();
+            try
+            {
+                UInt160 ownerScriptHash = new UInt160(owner);
+                return Wallet.ToAddress(ownerScriptHash);
+            }
+            catch (Exception)
+            {
+                return "";
+            }
         }
 
         public static bool Register(string profile, string owner)
