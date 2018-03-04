@@ -94,6 +94,7 @@
             this.linkLabelVerifyLink.TabIndex = 3;
             this.linkLabelVerifyLink.TabStop = true;
             this.linkLabelVerifyLink.Text = "Click here to start email address verificaion";
+            this.linkLabelVerifyLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelVerifyLink_LinkClicked);
             // 
             // labelVerificationStatus
             // 

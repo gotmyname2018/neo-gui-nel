@@ -10,13 +10,15 @@ namespace plugin_profile
     {
         private bool editing = false;
         private string savedProfile;
+        private string emailVerifyUrl;
+        private string emailVerifyParams;
 
         public MyProfileForm()
         {
             InitializeComponent();
         }
 
-        private void toggleEditMode()
+        private void ToggleEditMode()
         {
             editing = !editing;
             textBoxProfile.ReadOnly = !editing;
@@ -27,27 +29,49 @@ namespace plugin_profile
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
-            toggleEditMode();
+            ToggleEditMode();
             textBoxProfile.Text = savedProfile;
         }
 
         private void buttonQuery_Click(object sender, EventArgs e)
         {
-
+            RefreshCurrentAccountProfile();
         }
 
         private void buttonEdit_Click(object sender, EventArgs e)
         {
-            toggleEditMode();
-            if (editing) savedProfile = textBoxProfile.Text;
+            if (editing)
+            {
+                try
+                {
+                    JObject j = JObject.Parse(textBoxProfile.Text);
+                    if (j["email"] == null)
+                    {
+                        MessageBox.Show("The email address is missing in the profile", "Error!");
+                        return;
+                    }
+                    ProfileContractHelper.Register(j.ToString(), GetCurrentAccountPublicKey());
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("The profile should be a valid json object", "Error!");
+                    return;
+                }
+            }
+            else
+            {
+                savedProfile = textBoxProfile.Text;
+            }
+            ToggleEditMode();
         }
 
         private void ProfileForm_Load(object sender, EventArgs e)
         {
             if (plugin_profile.api.CurrentWallet != null)
             {
-                var currWallet = plugin_profile.api.CurrentWallet;
-                foreach (var account in currWallet.GetAccounts())
+                emailVerifyUrl = ProfileContractHelper.EmailVerifyUrl();
+                Wallet wallet = plugin_profile.api.CurrentWallet;
+                foreach (var account in wallet.GetAccounts())
                 {
                     var addrOut = account.ScriptHash;
                     string addrStr = Wallet.ToAddress(addrOut);
@@ -61,11 +85,17 @@ namespace plugin_profile
             }
         }
 
-        private void comboBoxAccounts_SelectedIndexChanged(object sender, EventArgs e)
+        private byte[] GetCurrentAccountPublicKey()
         {
-            Wallet currWallet = plugin_profile.api.CurrentWallet;
-            WalletAccount account = currWallet.GetAccount(Wallet.ToScriptHash(comboBoxAccounts.Text));
-            JObject j = ProfileContractHelper.QueryByKey(account.GetKey().PublicKey.EncodePoint(true));
+            Wallet wallet = plugin_profile.api.CurrentWallet;
+            WalletAccount account = wallet.GetAccount(Wallet.ToScriptHash(comboBoxAccounts.Text));
+            return account.GetKey().PublicKey.EncodePoint(true);
+        }
+
+        private void RefreshCurrentAccountProfile()
+        {
+            byte[] pubkey = GetCurrentAccountPublicKey();
+            JObject j = ProfileContractHelper.QueryByKey(pubkey);
             string profile = j.ToString();
             string email = j["email"].AsString();
             bool verified = false;
@@ -78,6 +108,21 @@ namespace plugin_profile
             textBoxProfile.Text = profile;
             labelVerificationStatus.Text = verified ? "Yes" : "No";
             linkLabelVerifyLink.Visible = !verified && email != "";
+            if (linkLabelVerifyLink.Visible)
+            {
+                emailVerifyParams = "email=" + email + "&owner=" + pubkey.ToHexString();
+            }
+        }
+        private void comboBoxAccounts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshCurrentAccountProfile();
+        }
+
+        private void linkLabelVerifyLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            byte[] pubkey = GetCurrentAccountPublicKey();
+            string url = emailVerifyUrl + "?" + emailVerifyParams;
+            System.Diagnostics.Process.Start(url);
         }
     }
 }

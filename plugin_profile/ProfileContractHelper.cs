@@ -17,7 +17,7 @@ namespace plugin_profile
         public static string EmailVerifyUrl()
         {
             UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
-            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "contractOwner");
+            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "emailVerifyUrl");
             return System.Text.Encoding.UTF8.GetString(engine.EvaluationStack.Peek().GetByteArray());
         }
 
@@ -32,7 +32,7 @@ namespace plugin_profile
                 }
                 return j;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 JObject j = new JObject();
                 j["email"] = "";
@@ -43,7 +43,7 @@ namespace plugin_profile
         public static JObject Query(string email)
         {
             UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
-            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "contractOwner");
+            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "query", email);
             string result = System.Text.Encoding.UTF8.GetString(engine.EvaluationStack.Peek().GetByteArray());
             return ParseProfile(result);
         }
@@ -51,7 +51,7 @@ namespace plugin_profile
         public static JObject QueryByKey(byte[] owner)
         {
             UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
-            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "contractOwner");
+            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "queryByKey", owner);
             string result = System.Text.Encoding.UTF8.GetString(engine.EvaluationStack.Peek().GetByteArray());
             return ParseProfile(result);
         }
