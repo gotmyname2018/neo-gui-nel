@@ -130,7 +130,7 @@
             this.buttonQuery.Name = "buttonQuery";
             this.buttonQuery.Size = new System.Drawing.Size(100, 29);
             this.buttonQuery.TabIndex = 8;
-            this.buttonQuery.Text = "Query";
+            this.buttonQuery.Text = "Refresh";
             this.buttonQuery.UseVisualStyleBackColor = true;
             this.buttonQuery.Click += new System.EventHandler(this.buttonQuery_Click);
             // 

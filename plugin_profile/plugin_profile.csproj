@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -52,6 +55,7 @@
       <DependentUpon>ManualVerifyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="plugin_profile.cs" />
+    <Compile Include="ProfileContractHelper.cs" />
     <Compile Include="ProfileSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +75,10 @@
     <Compile Include="QueryAccountForm.Designer.cs">
       <DependentUpon>QueryAccountForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SmartContractHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\neo-gui_pluginframework\neo-gui_pluginframework.csproj">

@@ -1,5 +1,6 @@
 ﻿using Neo;
 using Neo.Wallets;
+using Neo.IO.Json;
 using System;
 using System.Windows.Forms;
 
@@ -13,17 +14,6 @@ namespace plugin_profile
         public MyProfileForm()
         {
             InitializeComponent();
-        }
-
-        public static byte[] FromHexString(string str)
-        {
-            byte[] data = new byte[str.Length / 2];
-            for (var i = 0; i < str.Length / 2; i++)
-            {
-                var hex = str.Substring(i * 2, 2);
-                data[i] = byte.Parse(hex, System.Globalization.NumberStyles.HexNumber);
-            }
-            return data;
         }
 
         private void toggleEditMode()
@@ -73,7 +63,21 @@ namespace plugin_profile
 
         private void comboBoxAccounts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            textBoxProfile.Text = comboBoxAccounts.Text;
+            Wallet currWallet = plugin_profile.api.CurrentWallet;
+            WalletAccount account = currWallet.GetAccount(Wallet.ToScriptHash(comboBoxAccounts.Text));
+            JObject j = ProfileContractHelper.QueryByKey(account.GetKey().PublicKey.EncodePoint(true));
+            string profile = j.ToString();
+            string email = j["email"].AsString();
+            bool verified = false;
+            if (email != "")
+            {
+                JObject j1 = ProfileContractHelper.Query(email);
+                string email1 = j1["email"].AsString();
+                verified = email1.Equals(email);
+            }
+            textBoxProfile.Text = profile;
+            labelVerificationStatus.Text = verified ? "Yes" : "No";
+            linkLabelVerifyLink.Visible = !verified && email != "";
         }
     }
 }
