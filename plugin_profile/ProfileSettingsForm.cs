@@ -22,6 +22,7 @@ namespace plugin_profile
         private void buttonUpdate_Click(object sender, EventArgs e)
         {
             plugin_profile.ContractScriptHash = textBoxContractHash.Text;
+            plugin_profile.api.SetConfig("ProfileContractScriptHash", plugin_profile.ContractScriptHash);
         }
 
         private void ProfileSettingsForm_Load(object sender, EventArgs e)
@@ -33,6 +34,7 @@ namespace plugin_profile
         private void buttonReset_Click(object sender, EventArgs e)
         {
             plugin_profile.ContractScriptHash = savedContractScriptHash;
+            plugin_profile.api.SetConfig("ProfileContractScriptHash", plugin_profile.ContractScriptHash);
             textBoxContractHash.Text = plugin_profile.ContractScriptHash;
         }
     }

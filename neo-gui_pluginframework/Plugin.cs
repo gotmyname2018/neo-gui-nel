@@ -97,7 +97,12 @@ namespace Neo.GUIPlugin
 
     public interface IAPI
     {
+        string GetConfig(string key);
+        void SetConfig(string key, string value);
+
         void SignAndShowInformation(Transaction tx);
+        void SendRaw(Transaction tx);
+
         LocalNode LocalNode
         {
             get;
@@ -106,10 +111,6 @@ namespace Neo.GUIPlugin
         {
             get;
         }
-    }
-    public interface IAPI2 : IAPI
-    {
-        void SendRaw(Transaction tx);
     }
 
     public interface IPlugin

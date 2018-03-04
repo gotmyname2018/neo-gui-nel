@@ -48,6 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ManualGrantForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManualGrantForm.Designer.cs">
+      <DependentUpon>ManualGrantForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ManualVerifyForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,6 +101,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ManualGrantForm.resx">
+      <DependentUpon>ManualGrantForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ManualVerifyForm.resx">
       <DependentUpon>ManualVerifyForm.cs</DependentUpon>
     </EmbeddedResource>

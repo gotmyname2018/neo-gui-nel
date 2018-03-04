@@ -18,6 +18,8 @@ namespace Neo
 {
     internal static class Program
     {
+        public static string ProfileContractScriptHash = "0x581ef4bbebda538a9e5dffc501023fe174d0eb3d";
+
         public static LocalNode LocalNode;
         public static Wallet CurrentWallet;
         public static MainForm MainForm;

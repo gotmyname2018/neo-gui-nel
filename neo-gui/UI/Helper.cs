@@ -93,7 +93,7 @@ namespace Neo.UI
 
         public static string QueryEmailAddressOwner(string email)
         {
-            UInt160 scriptHash = UInt160.Parse("0xff9e21bf9d3bf84bb96be6d42ad0102af24e9289");
+            UInt160 scriptHash = UInt160.Parse(Program.ProfileContractScriptHash);
             byte[] script;
             using (ScriptBuilder sb = new ScriptBuilder())
             {

@@ -80,5 +80,12 @@ namespace plugin_profile
             byte[] ownerScriptHash = Wallet.ToScriptHash(owner).ToArray();
             return SmartContractHelper.Exec(plugin_profile.api.CurrentWallet, plugin_profile.api.LocalNode, scriptHash, "register", profile, ownerScriptHash);
         }
+
+        public static bool Grant(string email, string owner)
+        {
+            UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
+            byte[] ownerScriptHash = Wallet.ToScriptHash(owner).ToArray();
+            return SmartContractHelper.Exec(plugin_profile.api.CurrentWallet, plugin_profile.api.LocalNode, scriptHash, "grant", email, ownerScriptHash, new byte[0]);
+        }
     }
 }

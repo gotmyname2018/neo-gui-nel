@@ -233,11 +233,32 @@ namespace Neo.UI
             }
         }
 		
-        class Api : Neo.GUIPlugin.IAPI2
+        class Api : Neo.GUIPlugin.IAPI
         {
             public Network.LocalNode LocalNode => Program.LocalNode;
 
             public Wallet CurrentWallet => Program.CurrentWallet;
+
+            public string GetConfig(string key)
+            {
+                switch (key)
+                {
+                    case "ProfileContractScriptHash":
+                        return Program.ProfileContractScriptHash;
+                    default:
+                        return "";
+                }
+            }
+
+            public void SetConfig(string key, string value)
+            {
+                switch (key)
+                {
+                    case "ProfileContractScriptHash":
+                        Program.ProfileContractScriptHash = value;
+                        return;
+                }
+            }
 
             public void SendRaw(Transaction tx)
             {

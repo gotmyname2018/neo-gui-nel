@@ -12,17 +12,17 @@ namespace plugin_profile
         public static IAPI api;
         public string Name => "Account profile";
 
-        private static readonly string DEFAULT_CONTRACT_SCRIPT_HASH = "0xff9e21bf9d3bf84bb96be6d42ad0102af24e9289";
-        public static string ContractScriptHash = DEFAULT_CONTRACT_SCRIPT_HASH;
+        public static string ContractScriptHash;
 
         public void Init(IAPI api)
         {
             plugin_profile.api = api;
+            plugin_profile.ContractScriptHash = api.GetConfig("ProfileContractScriptHash");
         }
 
         public string[] GetMenus()
         {
-            return new string[] { "Settings", "My profile", "Query account", "Manual verify" };
+            return new string[] { "Settings", "My profile", "Query account", "Manual verify", "Manual grant (testing only)" };
         }
         
         public void OnMenu(string menu)
@@ -44,6 +44,10 @@ namespace plugin_profile
                 case "Manual verify":
                     ManualVerifyForm form4 = new ManualVerifyForm();
                     form4.ShowDialog();
+                    break;
+                case "Manual grant (testing only)":
+                    ManualGrantForm form5 = new ManualGrantForm();
+                    form5.ShowDialog();
                     break;
             }
         }
