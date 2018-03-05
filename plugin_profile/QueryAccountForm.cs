@@ -13,12 +13,19 @@ namespace plugin_profile
 
         private void buttonQuery_Click(object sender, EventArgs e)
         {
-            string owner = textBoxAccount.Text;
-            JObject j = ProfileContractHelper.QueryByAccount(owner);
-            string profile = j.ToString();
-            string email = j["email"].AsString();
+            string profile;
+            JObject j;
             bool verified = false;
-            if (email != "")
+            string owner = textBoxAccount.Text;
+            if (owner.Contains("@"))
+            {
+                owner = ProfileContractHelper.QueryOwner(owner);
+                verified = true;
+            }
+            j = ProfileContractHelper.QueryByAccount(owner);
+            profile = j.ToString();
+            string email = j["email"].AsString();
+            if (email != "" && !verified)
             {
                 JObject j1 = ProfileContractHelper.Query(email);
                 string email1 = j1["email"].AsString();
@@ -26,6 +33,7 @@ namespace plugin_profile
             }
             textBoxProfile.Text = profile;
             labelVerificationStatus.Text = verified ? "Yes" : "No";
+            textBoxAddress.Text = owner;
         }
     }
 }

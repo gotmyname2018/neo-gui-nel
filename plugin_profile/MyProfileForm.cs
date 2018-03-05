@@ -38,6 +38,13 @@ namespace plugin_profile
             RefreshCurrentAccountProfile();
         }
 
+        private byte[] GetCurrentAccountPublicKey()
+        {
+            Wallet wallet = plugin_profile.api.CurrentWallet;
+            WalletAccount account = wallet.GetAccount(Wallet.ToScriptHash(comboBoxAccounts.Text));
+            return account.GetKey().PublicKey.EncodePoint(true);
+        }
+
         private void buttonEdit_Click(object sender, EventArgs e)
         {
             if (editing)
@@ -50,6 +57,7 @@ namespace plugin_profile
                         MessageBox.Show("The email address is missing in the profile", "Error!");
                         return;
                     }
+                    j["pubkey"] = GetCurrentAccountPublicKey().ToHexString();
                     ProfileContractHelper.Register(j.ToString(), comboBoxAccounts.Text);
                 }
                 catch (Exception)
@@ -83,13 +91,6 @@ namespace plugin_profile
                 buttonEdit.Enabled = true;
                 buttonQuery.Enabled = true;
             }
-        }
-
-        private byte[] GetCurrentAccountPublicKey()
-        {
-            Wallet wallet = plugin_profile.api.CurrentWallet;
-            WalletAccount account = wallet.GetAccount(Wallet.ToScriptHash(comboBoxAccounts.Text));
-            return account.GetKey().PublicKey.EncodePoint(true);
         }
 
         private void RefreshCurrentAccountProfile()

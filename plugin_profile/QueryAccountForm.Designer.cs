@@ -35,11 +35,15 @@
             this.label2 = new System.Windows.Forms.Label();
             this.buttonQuery = new System.Windows.Forms.Button();
             this.textBoxAccount = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBoxAddress = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.textBoxAddress);
+            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.labelVerificationStatus);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.textBoxProfile);
@@ -81,12 +85,12 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(42, 24);
+            this.label2.Location = new System.Drawing.Point(42, 28);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(71, 15);
+            this.label2.Size = new System.Drawing.Size(199, 15);
             this.label2.TabIndex = 9;
-            this.label2.Text = "Account:";
+            this.label2.Text = "Account address or mail:";
             // 
             // buttonQuery
             // 
@@ -100,10 +104,27 @@
             // 
             // textBoxAccount
             // 
-            this.textBoxAccount.Location = new System.Drawing.Point(120, 24);
+            this.textBoxAccount.Location = new System.Drawing.Point(248, 24);
             this.textBoxAccount.Name = "textBoxAccount";
-            this.textBoxAccount.Size = new System.Drawing.Size(534, 25);
+            this.textBoxAccount.Size = new System.Drawing.Size(406, 25);
             this.textBoxAccount.TabIndex = 12;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(195, 272);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(71, 15);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Address:";
+            // 
+            // textBoxAddress
+            // 
+            this.textBoxAddress.Location = new System.Drawing.Point(267, 269);
+            this.textBoxAddress.Name = "textBoxAddress";
+            this.textBoxAddress.ReadOnly = true;
+            this.textBoxAddress.Size = new System.Drawing.Size(319, 25);
+            this.textBoxAddress.TabIndex = 4;
             // 
             // QueryAccountForm
             // 
@@ -132,5 +153,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonQuery;
         private System.Windows.Forms.TextBox textBoxAccount;
+        private System.Windows.Forms.TextBox textBoxAddress;
+        private System.Windows.Forms.Label label1;
     }
 }
