@@ -77,15 +77,16 @@ namespace plugin_profile
         public static bool Register(string profile, string owner)
         {
             UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
-            byte[] ownerScriptHash = Wallet.ToScriptHash(owner).ToArray();
-            return SmartContractHelper.Exec(plugin_profile.api.CurrentWallet, plugin_profile.api.LocalNode, scriptHash, "register", profile, ownerScriptHash);
+            UInt160 ownerAddress = Wallet.ToScriptHash(owner);
+            byte[] ownerScriptHash = ownerAddress.ToArray();
+            return SmartContractHelper.Exec(plugin_profile.api.CurrentWallet, plugin_profile.api.LocalNode, scriptHash, ownerAddress, "register", profile, ownerScriptHash);
         }
 
         public static bool Grant(string email, string owner)
         {
             UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
             byte[] ownerScriptHash = Wallet.ToScriptHash(owner).ToArray();
-            return SmartContractHelper.Exec(plugin_profile.api.CurrentWallet, plugin_profile.api.LocalNode, scriptHash, "grant", email, ownerScriptHash, new byte[0]);
+            return SmartContractHelper.Exec(plugin_profile.api.CurrentWallet, plugin_profile.api.LocalNode, scriptHash, null, "grant", email, ownerScriptHash, new byte[0]);
         }
     }
 }

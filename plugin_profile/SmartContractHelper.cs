@@ -57,7 +57,7 @@ namespace plugin_profile
             return ApplicationEngine.Run(script);
         }
 
-        public static bool Exec(Wallet wallet, LocalNode node, UInt160 scriptHash, string operation, params object[] args)
+        public static bool Exec(Wallet wallet, LocalNode node, UInt160 scriptHash, UInt160 changeAddress, string operation, params object[] args)
         {
             byte[] script = MakeExecScript(scriptHash, operation, args);
             ApplicationEngine engine = ApplicationEngine.Run(script);
@@ -73,7 +73,7 @@ namespace plugin_profile
                 Attributes = new TransactionAttribute[0],
                 Inputs = new CoinReference[0],
                 Outputs = new TransactionOutput[0]
-            }, fee: fee);
+            }, change_address: changeAddress, fee: fee);
             return SignAndShowInformation(wallet, node, it);
         }
     }
