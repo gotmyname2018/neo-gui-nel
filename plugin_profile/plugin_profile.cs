@@ -22,7 +22,7 @@ namespace plugin_profile
 
         public string[] GetMenus()
         {
-            return new string[] { "Settings", "My profile", "Query account", "Manual verify", "Manual grant (testing only)" };
+            return new string[] { "Settings", "My profile", "Query account", "Manual verify", "Manual grant" };
         }
         
         public void OnMenu(string menu)

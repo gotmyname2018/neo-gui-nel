@@ -15,10 +15,17 @@ namespace plugin_profile
             return engine.EvaluationStack.Peek().GetByteArray();
         }
 
-        public static string EmailVerifyUrl()
+        public static string EmailVerifyRequestUrl()
         {
             UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
-            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "emailVerifyUrl");
+            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "emailVerifyReqUrl");
+            return System.Text.Encoding.UTF8.GetString(engine.EvaluationStack.Peek().GetByteArray());
+        }
+
+        public static string EmailVerifyResponseUrl()
+        {
+            UInt160 scriptHash = UInt160.Parse(plugin_profile.ContractScriptHash);
+            ApplicationEngine engine = SmartContractHelper.LocalExec(scriptHash, "emailVerifyRespUrl");
             return System.Text.Encoding.UTF8.GetString(engine.EvaluationStack.Peek().GetByteArray());
         }
 

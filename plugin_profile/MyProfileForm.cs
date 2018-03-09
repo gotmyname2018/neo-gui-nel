@@ -3,6 +3,7 @@ using Neo.Wallets;
 using Neo.IO.Json;
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace plugin_profile
 {
@@ -10,8 +11,8 @@ namespace plugin_profile
     {
         private bool editing = false;
         private string savedProfile;
-        private string emailVerifyUrl;
-        private string emailVerifyParams;
+        private string emailVerifyReqUrl;
+        private Dictionary<string, string> emailVerifyReqParams;
 
         public MyProfileForm()
         {
@@ -77,7 +78,7 @@ namespace plugin_profile
         {
             if (plugin_profile.api.CurrentWallet != null)
             {
-                emailVerifyUrl = ProfileContractHelper.EmailVerifyUrl();
+                emailVerifyReqUrl = ProfileContractHelper.EmailVerifyRequestUrl();
                 Wallet wallet = plugin_profile.api.CurrentWallet;
                 foreach (var account in wallet.GetAccounts())
                 {
@@ -111,7 +112,10 @@ namespace plugin_profile
             linkLabelVerifyLink.Visible = !verified && email != "";
             if (linkLabelVerifyLink.Visible)
             {
-                emailVerifyParams = "email=" + email + "&owner=" + owner;
+                emailVerifyReqParams = new Dictionary<string, string>() {
+                    { "email", email },
+                    { "owner", owner },
+                };
             }
         }
         private void comboBoxAccounts_SelectedIndexChanged(object sender, EventArgs e)
@@ -121,8 +125,29 @@ namespace plugin_profile
 
         private void linkLabelVerifyLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string url = emailVerifyUrl + "?" + emailVerifyParams;
-            System.Diagnostics.Process.Start(url);
+            string resp = HttpHelper.Get(emailVerifyReqUrl, emailVerifyReqParams);
+            if (resp == "")
+            {
+                MessageBox.Show("Failed to get response from verification server", "Error!");
+                return;
+            }
+            try
+            {
+                JObject j = JObject.Parse(resp);
+                if (j["result"].AsBoolean())
+                {
+                    MessageBox.Show("Verification request send to verification server successfully, a verfication challenge message will be send to your email address, check it");
+                }
+                else
+                {
+                    MessageBox.Show("Verification server failed to handle the request due to error: " + j["error"].AsString());
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Received invalid response from verification server", "Error!");
+                return;
+            }
         }
     }
 }

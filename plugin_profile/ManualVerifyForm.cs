@@ -12,6 +12,7 @@ namespace plugin_profile
     public partial class ManualVerifyForm : Form
     {
         private static Random random = new Random((int)DateTime.Now.Ticks);
+        private JObject responseJson;
 
         public ManualVerifyForm()
         {
@@ -254,7 +255,12 @@ namespace plugin_profile
             if (email == "") return;
             string responseMessage = ParseChallengeReceivedAndReturnResponseMessage(email);
             if (responseMessage == "") return;
-            textBoxResponseGenerated.Text = responseMessage + "\n" + Sign(responseMessage, comboBoxAccounts.Text);
+            string signature = Sign(responseMessage, comboBoxAccounts.Text);
+            textBoxResponseGenerated.Text = responseMessage + "\n" + signature;
+            responseJson = new JObject();
+            responseJson["message"] = responseMessage;
+            responseJson["signature"] = signature;
+            buttonSendResponse.Enabled = true;
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -269,6 +275,33 @@ namespace plugin_profile
                 labelPeerEmail.Visible = true;
                 textBoxPeerEmail.Visible = true;
             }
+        }
+
+        private void buttonSendResponse_Click(object sender, EventArgs e)
+        {
+            string emailVerifyRespUrl = ProfileContractHelper.EmailVerifyResponseUrl();
+            string resp = HttpHelper.Post(emailVerifyRespUrl, responseJson.ToString());
+            if (resp == "")
+            {
+                MessageBox.Show("Failed to get response from verification server", "Error!");
+                return;
+            }
+            try
+            {
+                JObject j = JObject.Parse(resp);
+                bool ok = j["result"].AsBoolean();
+                if (!ok)
+                {
+                    MessageBox.Show("Verification failed due to error: " + j["error"].AsString());
+                }
+                MessageBox.Show("Verification succeed");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Received invalid response from verification server", "Error!");
+                return;
+            }
+
         }
     }
 }

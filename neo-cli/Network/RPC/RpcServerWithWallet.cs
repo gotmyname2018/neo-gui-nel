@@ -1,9 +1,11 @@
 ﻿using Neo.Core;
+using Neo.Cryptography;
 using Neo.Implementations.Wallets.NEP6;
 using Neo.IO;
 using Neo.IO.Json;
 using Neo.SmartContract;
 using Neo.Wallets;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -197,6 +199,19 @@ namespace Neo.Network.RPC
                         WalletAccount account = Program.Wallet.GetAccount(scriptHash);
                         return account.GetKey().Export();
                     }
+                case "signdata":
+                    if (Program.Wallet == null)
+                        throw new RpcException(-400, "Access denied");
+                    else
+                    {
+                        byte[] data = System.Text.Encoding.UTF8.GetBytes(_params[0].AsString());
+                        KeyPair keys = Program.Wallet.GetAccounts().First().GetKey();
+                        using (keys.Decrypt())
+                        {
+                            byte[] pubkey = keys.PublicKey.EncodePoint(false).Skip(1).ToArray();
+                            return Convert.ToBase64String(Crypto.Default.Sign(data, keys.PrivateKey, pubkey));
+                        }
+                    }
                 case "invoke":
                 case "invokefunction":
                 case "invokescript":
@@ -225,6 +240,49 @@ namespace Neo.Network.RPC
                         result["tx"] = tx?.ToArray().ToHexString();
                     }
                     return result;
+                case "executescript":
+                    {
+                        if (Program.Wallet == null)
+                        {
+                            return false;
+                        }
+                        byte[] script = _params[0].AsString().HexToBytes();
+                        ApplicationEngine engine = ApplicationEngine.Run(script);
+                        Fixed8 gas = engine.GasConsumed - Fixed8.FromDecimal(10);
+                        if (gas < Fixed8.Zero) gas = Fixed8.Zero;
+                        gas = gas.Ceiling();
+                        Fixed8 fee = gas.Equals(Fixed8.Zero) ? Fixed8.FromDecimal(0.001m) : Fixed8.Zero;
+                        InvocationTransaction tx = Program.Wallet.MakeTransaction(new InvocationTransaction
+                        {
+                            Version = 1,
+                            Script = script,
+                            Gas = gas,
+                            Attributes = new TransactionAttribute[0],
+                            Inputs = new CoinReference[0],
+                            Outputs = new TransactionOutput[0]
+                        }, fee: fee);
+                        if (tx == null)
+                        {
+                            return false;
+                        }
+                        ContractParametersContext context;
+                        try
+                        {
+                            context = new ContractParametersContext(tx);
+                        }
+                        catch (Exception)
+                        {
+                            return false;
+                        }
+                        Program.Wallet.Sign(context);
+                        if (!context.Completed)
+                        {
+                            return false;
+                        }
+                        context.Verifiable.Scripts = context.GetScripts();
+                        Program.Wallet.ApplyTransaction(tx);
+                        return LocalNode.Relay(tx);
+                    }
                 default:
                     return base.Process(method, _params);
             }

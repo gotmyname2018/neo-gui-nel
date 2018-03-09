@@ -88,7 +88,7 @@ namespace Neo.GUIPlugin
                           };
                     }
                 }
-                catch (Exception err)
+                catch (Exception)
                 {
                 }
             }

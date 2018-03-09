@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "neo-cli": {
+      "commandName": "Project",
+      "commandLineArgs": "/rpc",
+      "workingDirectory": "D:\\Work\\coin\\neo\\neo-gui-nel\\neo-cli\\bin\\Debug\\net47\\win10-x64"
+    }
+  }
+}

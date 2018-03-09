@@ -36,6 +36,8 @@
             this.textBoxChallengeGenerated = new System.Windows.Forms.TextBox();
             this.buttonGenChallenge = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.textBoxChallengeSend = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.textBoxResponseReceived = new System.Windows.Forms.TextBox();
@@ -52,18 +54,17 @@
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxPeerEmail = new System.Windows.Forms.TextBox();
             this.labelPeerEmail = new System.Windows.Forms.Label();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.textBoxChallengeSend = new System.Windows.Forms.TextBox();
+            this.buttonSendResponse = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -148,6 +149,24 @@
             this.tabPage2.Text = "Verify response";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.textBoxChallengeSend);
+            this.groupBox6.Location = new System.Drawing.Point(14, 10);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(314, 206);
+            this.groupBox6.TabIndex = 12;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Challenge send";
+            // 
+            // textBoxChallengeSend
+            // 
+            this.textBoxChallengeSend.Location = new System.Drawing.Point(6, 20);
+            this.textBoxChallengeSend.Multiline = true;
+            this.textBoxChallengeSend.Name = "textBoxChallengeSend";
+            this.textBoxChallengeSend.Size = new System.Drawing.Size(302, 176);
+            this.textBoxChallengeSend.TabIndex = 1;
+            // 
             // textBox3
             // 
             this.textBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
@@ -191,6 +210,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.buttonSendResponse);
             this.tabPage3.Controls.Add(this.groupBox5);
             this.tabPage3.Controls.Add(this.groupBox3);
             this.tabPage3.Controls.Add(this.buttonGenResponse);
@@ -243,7 +263,7 @@
             // 
             this.buttonGenResponse.Location = new System.Drawing.Point(524, 229);
             this.buttonGenResponse.Name = "buttonGenResponse";
-            this.buttonGenResponse.Size = new System.Drawing.Size(140, 74);
+            this.buttonGenResponse.Size = new System.Drawing.Size(140, 40);
             this.buttonGenResponse.TabIndex = 10;
             this.buttonGenResponse.Text = "Generate response";
             this.buttonGenResponse.UseVisualStyleBackColor = true;
@@ -307,23 +327,16 @@
             this.labelPeerEmail.TabIndex = 2;
             this.labelPeerEmail.Text = "Email address to be verified:";
             // 
-            // groupBox6
+            // buttonSendResponse
             // 
-            this.groupBox6.Controls.Add(this.textBoxChallengeSend);
-            this.groupBox6.Location = new System.Drawing.Point(14, 10);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(314, 206);
-            this.groupBox6.TabIndex = 12;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Challenge send";
-            // 
-            // textBoxChallengeSend
-            // 
-            this.textBoxChallengeSend.Location = new System.Drawing.Point(6, 20);
-            this.textBoxChallengeSend.Multiline = true;
-            this.textBoxChallengeSend.Name = "textBoxChallengeSend";
-            this.textBoxChallengeSend.Size = new System.Drawing.Size(302, 176);
-            this.textBoxChallengeSend.TabIndex = 1;
+            this.buttonSendResponse.Enabled = false;
+            this.buttonSendResponse.Location = new System.Drawing.Point(524, 275);
+            this.buttonSendResponse.Name = "buttonSendResponse";
+            this.buttonSendResponse.Size = new System.Drawing.Size(140, 28);
+            this.buttonSendResponse.TabIndex = 13;
+            this.buttonSendResponse.Text = "Send";
+            this.buttonSendResponse.UseVisualStyleBackColor = true;
+            this.buttonSendResponse.Click += new System.EventHandler(this.buttonSendResponse_Click);
             // 
             // ManualVerifyForm
             // 
@@ -342,6 +355,8 @@
             this.groupBox1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
@@ -352,8 +367,6 @@
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -385,5 +398,6 @@
         private System.Windows.Forms.TextBox textBoxResponseGenerated;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.TextBox textBoxChallengeSend;
+        private System.Windows.Forms.Button buttonSendResponse;
     }
 }
