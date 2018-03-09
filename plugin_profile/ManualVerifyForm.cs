@@ -62,7 +62,7 @@ namespace plugin_profile
 
         private string ParseChallengeReceivedAndReturnResponseMessage(string myEmail)
         {
-            string message = textBoxChallengeReceived.Text;
+            string message = textBoxChallengeReceived.Text.Trim();
             string[] parts = message.Split('\n');
             if (parts.Length != 2)
             {
@@ -189,10 +189,10 @@ namespace plugin_profile
         {
             if (!CheckEmailAddressInput()) return;
             string myEmail = CheckCurrentAccountProfile();
-            JObject j = ParseChallengeMessageSend(textBoxChallengeSend.Text, myEmail);
+            JObject j = ParseChallengeMessageSend(textBoxChallengeSend.Text.Trim(), myEmail);
             if (j == null) return;
             string challenge = j["challenge"].AsString();
-            string message = textBoxResponseReceived.Text;
+            string message = textBoxResponseReceived.Text.Trim();
             string[] parts = message.Split('\n');
             if (parts.Length != 2)
             {
